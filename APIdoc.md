@@ -61,13 +61,13 @@ Render a HTTP response into `response`.
  Even though it's not a strict requirement from this interface, most
  implementations will assume that prior to invocation `response` is uncommitted.
 
-### WebView\<T>
-_(interface)_ | T: model type.
+### WebView\<X>
+_(interface)_ | X: model type.
 
 A `WebView` is responsible for rendering the result model of an [`WebController`](#webcontrollerx)
  into a HTTP response.
 
-**`render(T model, HttpServletResponse response)`**  
+**`render(X model, HttpServletResponse response)`**  
 Render `model` into `response`.
 
  By passing `response` all claims onto `response` are yielded. I.e. after
@@ -333,7 +333,7 @@ Write data to `writer`. `writer` should be ready to be written to.
 _(abstract)_  
 _implements_ WebRenderer
 
-Abstract [`HttpResponseRenderer`](#httpresponserenderer) facilitating the definition and rendering
+Abstract [`WebRenderer`](#webrenderer) facilitating the definition and rendering
  of HTTP headers.
 
 **`withStatus(int status)`**  
