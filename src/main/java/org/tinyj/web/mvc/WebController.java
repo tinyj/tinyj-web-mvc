@@ -1,9 +1,4 @@
-# TinyJ WebMVC
-
-A container agnostic web model-view-controller framework.
-
-## License
-
+/*
 Copyright 2016 Eric Karge <e.karge@struction.de>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,3 +12,21 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+*/
+package org.tinyj.web.mvc;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * A conceptual variation of the (#HttpRequestHandler) interface. Instead of
+ * directly rendering into a passed `HttpServletResponse` output parameter a model
+ * describing the result is returned, leaving the final rendering to another party.
+ *
+ * @param <X> Type of the result model.
+ */
+@FunctionalInterface
+public interface WebController<X> {
+
+  /** @return the result model */
+  X handle(HttpServletRequest request) throws Exception;
+}
