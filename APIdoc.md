@@ -24,7 +24,7 @@ Use `response` to render a HTTP response to `request`.
 ### WebController\<X>
 _(interface)_ | X: Type of the result model.
 
-A conceptual variation of the [`HttpRequestHandler`](#HttpRequestHandler) interface. Instead of
+A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interface. Instead of
  directly rendering into a passed `HttpServletResponse` output parameter a model
  describing the result is returned, leaving the final rendering to another party.
 
@@ -36,20 +36,20 @@ A conceptual variation of the [`HttpRequestHandler`](#HttpRequestHandler) interf
 X: Type of the result model.  
 _implements_ HttpRequestHandler
 
-Bridges [`WebController`](#WebController) to [`HttpRequestHandler`](#HttpRequestHandler).
+Bridges [`WebController`](#webcontrollerx) to [`HttpRequestHandler`](#httprequesthandler).
 
 **`WebMVCBridge(WebView view, WebController handler)`** _(constructor)_  
-Translate `handler` into a [`HttpRequestHandler`](#HttpRequestHandler) by using `view` to render
+Translate `handler` into a [`HttpRequestHandler`](#httprequesthandler) by using `view` to render
  the result model into a `HttpServletResponse`.
 
 ### WebRenderer
 _(interface)_
 
-`WebRender` is a conceptual variation of [`WebView`](#WebView). Instead of returning a
- result model a [`WebController`](#WebController) returns a `WebRenderer` carrying all the state
+`WebRender` is a conceptual variation of [`WebView`](#webviewx). Instead of returning a
+ result model a [`WebController`](#webcontrollerx) returns a `WebRenderer` carrying all the state
  necessary to render a HTTP response.
 
- This allows for more control of the [`WebController`](#WebController) over the final HTTP response.
+ This allows for more control of the [`WebController`](#webcontrollerx) over the final HTTP response.
 
 **`render(HttpServletResponse response)`**  
 Render a HTTP response into `response`.
@@ -64,7 +64,7 @@ Render a HTTP response into `response`.
 ### WebView\<T>
 _(interface)_ | T: model type.
 
-A `WebView` is responsible for rendering the result model of an [`WebController`](#WebController)
+A `WebView` is responsible for rendering the result model of an [`WebController`](#webcontrollerx)
  into a HTTP response.
 
 **`render(T model, HttpServletResponse response)`**  
@@ -96,23 +96,23 @@ Bridge for the view-controller pattern, where, instead of a model, the
 
 **`dispatch(Route[] routes)`**  
 ⇒ *`HttpRequestHandler`*  
-Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#HttpRequestDispatcher).
+Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httprequestdispatcher).
 
 **`route(String target, HttpRequestHandler handler)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Creates a dispatcher routing entry.
 
-**`resource(String target, MethodHandler[] methodHandlers)`**  
+**`resource(String target, Method[] methods)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, resource(methodHandlers))`.
+Shortcut for `route(target, resource(methods))`.
 
 **`mvc(String target, WebView view, WebController controller)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, mvc(methodHandlers))`.
+Shortcut for `route(target, mvc(view, controller))`.
 
 **`vc(String target, WebController controller)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, vc(methodHandlers))`.
+Shortcut for `route(target, vc(controller))`.
 
 **`dispatch(String target, Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
@@ -120,55 +120,59 @@ Shortcut for `route(target, dispatch(routes))`.
 
 **`dispatch(Route[] routes)`**  
 ⇒ *`WebController`*  
-Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#WebMVCRequestDispatcher)
+Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#webmvcrequestdispatcherx)
 
-**`route(String path, WebController handler)`**  
+**`route(String path, WebController controller)`**  
 ⇒ *`WebMVCRequestDispatcher.Route`*  
 Creates a dispatcher routing entry
 
-**`controller(String path, Method[] handlers)`**  
+**`controller(String path, Method[] methods)`**  
 ⇒ *`WebMVCRequestDispatcher.Route`*  
-Shortcut for `route(target, controller(handlers))`.
+Shortcut for `route(target, controller(methods))`.
 
 **`dispatch(String path, Route[] routes)`**  
 ⇒ *`WebMVCRequestDispatcher.Route`*  
 Shortcut for `route(target, dispatch(routes))`.
 
-**`resource(MethodHandler[] handlers)`**  
+**`resource(Method[] handlers)`**  
 ⇒ *`HttpResource`*  
-Shortcut
+Shortcut for `new HttpResource(handlers)`, see [`HttpResource`](#httpresource)
+
+**`controller(Method[] handlers)`**  
+⇒ *`WebMVCResource`*  
+Shortcut for `new WebMVCResource(handlers)`, see [`WebMVCResource`](#webmvcresourcex)
 
 **`method(String method, HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler(method, handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method(method, handler)`.
 
 **`delete(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("DELETE", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("DELETE", handler)`.
 
 **`get(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("GET", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("GET", handler)`.
 
 **`head(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("HEAD", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("HEAD", handler)`.
 
 **`options(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("OPTIONS", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("OPTIONS", handler)`.
 
 **`patch(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("PATCH", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("PATCH", handler)`.
 
 **`post(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("POST", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("POST", handler)`.
 
 **`put(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.MethodHandler`*  
-Shortcut for `new HttpResource.MethodHandler("PUT", handler)`.
+⇒ *`HttpResource.Method`*  
+Shortcut for `new HttpResource.Method("PUT", handler)`.
 
 **`method(String method, WebController handler)`**  
 ⇒ *`WebMVCResource.Method`*  
@@ -238,7 +242,7 @@ Dummy to avoid defining empty filters.
 
 **`filter(HttpRequestFilter filter)`**  
 ⇒ *`HttpRequestFilter`*  
-Shortcut to specify [`HttpRequestFilter`](#HttpRequestFilter) lambda style. Returns its argument.
+Shortcut to specify [`HttpRequestFilter`](#httprequestfilter) lambda style. Returns its argument.
 
 **`filter(HttpRequestFilter[] chainedFilters)`**  
 ⇒ *`HttpRequestFilter`*  
@@ -263,13 +267,13 @@ An implementation can stop request propagation by not invoking `next`.
 
 **`conclude(HttpRequestHandler eoc)`**  
 ⇒ *`HttpRequestHandler`*  
-terminates a filter chain by adding [`HttpRequestHandler`](#HttpRequestHandler) `eoc` at it's end.
- Returns the resulting [`HttpRequestHandler`](#HttpRequestHandler).
+terminates a filter chain by adding [`HttpRequestHandler`](#httprequesthandler) `eoc` at it's end.
+ Returns the resulting [`HttpRequestHandler`](#httprequesthandler).
 
 ### HttpRequestFilterChain
 _implements_ HttpRequestFilter
 
-Composite [`HttpRequestFilter`](#HttpRequestFilter).
+Composite [`HttpRequestFilter`](#httprequestfilter).
 
 **`HttpRequestFilterChain(List chained)`** _(constructor)_  
 request will be propagated through `chained` in iteration order.
@@ -329,7 +333,7 @@ Write data to `writer`. `writer` should be ready to be written to.
 _(abstract)_  
 _implements_ WebRenderer
 
-Abstract [`HttpResponseRenderer`](#HttpResponseRenderer) facilitating the definition and rendering
+Abstract [`HttpResponseRenderer`](#httpresponserenderer) facilitating the definition and rendering
  of HTTP headers.
 
 **`withStatus(int status)`**  
@@ -363,7 +367,7 @@ Render response body. This method is called after `renderHeader`.
 ### HttpResource
 _implements_ HttpRequestHandler
 
-Dispatches a request to a HTTP resource to a set of [`MethodHandlers`](#MethodHandlers).
+Dispatches a request to a HTTP resource to a set of method handlers.
 
  `HttpResource` comes with three default handlers:
 
@@ -375,7 +379,7 @@ Dispatches a request to a HTTP resource to a set of [`MethodHandlers`](#MethodHa
  answered with "405 Method not allowed!". The _Allow_ header set to the list
  of supported methods.
 
-**`HttpResource(MethodHandler[] handlers)`** _(constructor)_  
+**`HttpResource(Method[] handlers)`** _(constructor)_  
 Create new `HttpResource` dispatching requests to `handlers`. A handler
  for `*` is removed from the list an registered as fallback handler.
 
@@ -398,7 +402,7 @@ default method handler fallback
 ### WebMVCResource\<X>
 _implements_ WebController
 
-Dispatches a request to a HTTP resource to a set of [`MethodHandlers`](#MethodHandlers).
+Dispatches a request to a HTTP resource to a set of method handlers.
 
 **`WebMVCResource(Method[] handlers)`** _(constructor)_  
 Create new `WebMVCResource` dispatching requests to `handlers`. If a handler

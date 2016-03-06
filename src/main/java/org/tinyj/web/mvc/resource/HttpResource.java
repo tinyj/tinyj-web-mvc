@@ -50,8 +50,8 @@ public class HttpResource implements HttpRequestHandler {
    *
    * If `handlers` contains multiple handlers for the same method the later wins.
    */
-  public HttpResource(MethodHandler... handlers) {
-    methods.putAll(stream(handlers).collect(toMap(MethodHandler::method, MethodHandler::handler)));
+  public HttpResource(Method... handlers) {
+    methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
     if (methods.containsKey("GET")) {
       methods.putIfAbsent("HEAD", this::head);
@@ -95,12 +95,12 @@ public class HttpResource implements HttpRequestHandler {
     response.getWriter().append("Method not allowed!\n").flush();
   }
 
-  public static class MethodHandler {
+  public static class Method {
 
     public final String method;
     public final HttpRequestHandler handler;
 
-    public MethodHandler(String method, HttpRequestHandler handler) {
+    public Method(String method, HttpRequestHandler handler) {
       this.method = method;
       this.handler = handler;
     }
