@@ -2,6 +2,10 @@
 
 A container agnostic web model-view-controller framework.
 
+## API documentation
+
+You can find the API documentation [here](APIdoc.md).
+
 ## License
 
 Copyright 2016 Eric Karge <e.karge@struction.de>
