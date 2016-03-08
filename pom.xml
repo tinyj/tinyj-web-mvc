@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.tinyj.test</groupId>
       <artifactId>tinyj-servlet-test</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -55,6 +55,15 @@
   <profiles>
     <profile>
       <id>sonatype</id>
+      <repositories>
+        <repository>
+          <id>oss.sonatype.com/snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
       <build>
         <plugins>
           <plugin>
