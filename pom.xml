@@ -122,7 +122,7 @@
       </distributionManagement>
     </profile>
     <profile>
-      <id>signing</id>
+      <id>sign</id>
       <activation>
         <property>
           <name>profile.sign</name>
