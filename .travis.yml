@@ -1,1 +1,5 @@
 laguage: java
+install:
+  - mvn package -P sonatype -D skipTests
+script:
+  - mvn verify -P sonatype
