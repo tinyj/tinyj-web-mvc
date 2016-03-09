@@ -62,19 +62,27 @@ public class StoreController extends WebMVCResource<WebResponse> {
     Set<String> values = valueParams != null ? Arrays.stream(valueParams).collect(toSet())
                                              : null;
 
-    return WebResponse.wrap(repository.find(keys, values));
+    return WebResponse.wrap(repository.findKeys(keys, values).stream()
+        .map(k -> request.getRequestURL().append('/').append(k).toString())
+        .collect(toSet()));
   }
 
   WebResponse<String> postValue(HttpServletRequest request) throws IOException {
     String value = request.getReader().readLine();
     final String subKey = repository.createKey(value);
 
-    return WebResponse.wrap(value).withStatus(201).withHeader("Location", subKey);
+    return WebResponse.wrap(value)
+        .withStatus(201).withHeader("Location", request.getRequestURL().append('/').append(subKey).toString());
   }
 
   WebResponse<String> putValue(HttpServletRequest request) throws IOException {
-    final String value = repository.update(getKey(request), request.getReader().readLine());
-    return WebResponse.wrap(value);
+    final String value = request.getReader().readLine();
+    final String oldValue = repository.update(getKey(request), value);
+    final WebResponse<String> response = WebResponse.wrap(value);
+    if (oldValue == null) {
+      response.withStatus(201).withHeader("Location", request.getRequestURL().toString());
+    }
+    return response;
   }
 
   String getKey(HttpServletRequest request) {

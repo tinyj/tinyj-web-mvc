@@ -46,7 +46,7 @@ public class Repository {
     return value;
   }
 
-  public Set<String> find(Set<String> keys, Set<String> values) {
+  public Set<String> findKeys(Set<String> keys, Set<String> values) {
     if (keys == null && values == null) {
       return storage.keySet();
     }
@@ -58,8 +58,7 @@ public class Repository {
   }
 
   public String update(String key, String value) {
-    storage.put(key, value);
-    return value;
+    return storage.put(key, value);
   }
 
   String createKey() {

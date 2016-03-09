@@ -29,11 +29,18 @@ public class StoreView extends WebResponseViewBase {
     final Object model = webResponse.getModel();
     final PrintWriter writer = response.getWriter();
     if (model instanceof Collection<?>) {
+      if (((Collection) model).isEmpty()) {
+        response.setStatus(204);
+      }
       for (Object entry : (Collection<?>) model) {
         writer.append(entry.toString()).append("\r\n");
       }
     } else {
-      writer.write(model.toString());
+      final String body = model.toString();
+      if (body.isEmpty()) {
+        response.setStatus(204);
+      }
+      writer.write(body);
     }
   }
 }
