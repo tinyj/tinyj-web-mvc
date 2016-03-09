@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toMap;
 public class HttpResource implements HttpRequestHandler {
 
   protected final Map<String, HttpRequestHandler> methods = new HashMap<>();
-  protected final HttpRequestHandler fallback;
+  protected HttpRequestHandler fallback;
 
   /**
    * Create new `HttpResource` dispatching requests to `handlers`. A handler
@@ -51,6 +51,14 @@ public class HttpResource implements HttpRequestHandler {
    * If `handlers` contains multiple handlers for the same method the later wins.
    */
   public HttpResource(Method... handlers) {
+    setMethods(handlers);
+  }
+
+  public HttpResource() {
+    fallback = this::methodNotAllowed;
+  }
+
+  protected void setMethods(Method[] handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
     if (methods.containsKey("GET")) {

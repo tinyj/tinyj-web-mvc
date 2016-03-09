@@ -48,8 +48,8 @@ public class BinaryRenderer
   }
 
   @Override
-  public void renderBody(HttpServletResponse request) throws Exception {
-    streamer.stream(request.getOutputStream());
+  public void renderBody(HttpServletResponse response) throws Exception {
+    streamer.stream(response.getOutputStream());
   }
 
   protected static void copy(InputStream input, OutputStream output, byte[] buffer) throws IOException {

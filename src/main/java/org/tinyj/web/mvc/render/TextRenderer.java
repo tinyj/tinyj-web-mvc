@@ -52,8 +52,8 @@ public class TextRenderer
   }
 
   @Override
-  public void renderBody(HttpServletResponse request) throws Exception {
-    texter.writeTo(request.getWriter());
+  public void renderBody(HttpServletResponse response) throws Exception {
+    texter.writeTo(response.getWriter());
   }
 
   protected static void copy(Reader reader, Writer writer, char[] buffer) throws IOException {

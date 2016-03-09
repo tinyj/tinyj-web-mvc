@@ -123,7 +123,7 @@ public interface DSL {
 
   /** Shortcut for `new WebMVCResource(handlers)`, see (#WebMVCResource) */
   @SafeVarargs
-  static <X> WebMVCResource controller(WebMVCResource.Method<? extends X>... handlers) {
+  static <X> WebMVCResource<X> controller(WebMVCResource.Method<? extends X>... handlers) {
     return new WebMVCResource<>(handlers);
   }
 

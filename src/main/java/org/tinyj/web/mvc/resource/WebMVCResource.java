@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toMap;
 public class WebMVCResource<X> implements WebController<X> {
 
   protected final Map<String, WebController<? extends X>> methods = new HashMap<>();
-  protected final WebController<? extends X> fallback;
+  protected WebController<? extends X> fallback;
 
   /**
    * Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
@@ -41,9 +41,19 @@ public class WebMVCResource<X> implements WebController<X> {
    */
   @SafeVarargs
   public WebMVCResource(final Method<? extends X>... handlers) {
+    setMethods(handlers);
+  }
+
+  @SafeVarargs
+  protected final void setMethods(Method<? extends X>... handlers) {
+    this.methods.clear();
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::controller)));
     WebController<? extends X> fallback = methods.remove("*");
     this.fallback = fallback != null ? fallback : request -> null;
+  }
+
+  protected WebMVCResource() {
+    fallback = request -> null;
   }
 
   @Override

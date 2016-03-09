@@ -94,5 +94,5 @@ public abstract class WebRendererBase implements WebRenderer {
   }
 
   /** Render response body. This method is called after `renderHeader`. */
-  protected abstract void renderBody(HttpServletResponse request) throws Exception;
+  protected abstract void renderBody(HttpServletResponse response) throws Exception;
 }

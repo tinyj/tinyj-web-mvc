@@ -359,7 +359,7 @@ response will be rendered with a `name`-header line for each passed value.
 render response headers (including status line). This method is called
  before `renderBody`.
 
-**`renderBody(HttpServletResponse request)`**  
+**`renderBody(HttpServletResponse response)`**
 Render response body. This method is called after `renderHeader`.
 
 ## org.tinyj.web.mvc.resource
