@@ -74,7 +74,7 @@ public interface DSL {
   }
 
   /** Shortcut for `route(target, mvc(view, controller))`. */
-  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<X> view, WebController<X> controller) {
+  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view, WebController<X> controller) {
     return new HttpRequestDispatcher.Route(target, new WebMVCBridge<>(view, controller));
   }
 
