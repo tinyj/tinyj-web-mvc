@@ -27,6 +27,7 @@ public class WebResponse<T> {
   protected final T model;
 
   public WebResponse(T model) {
+    this.status = 200;
     this.model = model;
   }
 
