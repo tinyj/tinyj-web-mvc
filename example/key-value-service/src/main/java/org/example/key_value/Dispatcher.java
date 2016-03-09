@@ -15,7 +15,8 @@ limitations under the License.
 */
 package org.example.key_value;
 
-import org.example.key_value.resource.StoreEndpoint;
+import org.example.key_value.resource.StoreController;
+import org.example.key_value.resource.StoreView;
 import org.example.key_value.status.StatusController;
 import org.example.key_value.status.StatusView;
 import org.tinyj.web.mvc.HttpRequestHandler;
@@ -30,19 +31,19 @@ import static org.tinyj.web.mvc.dsl.DSL.*;
 
 public class Dispatcher implements HttpRequestHandler {
 
-  private HttpRequestHandler dispatch;
+  private HttpRequestHandler dispatcher;
 
-  public Dispatcher(StatusController statusController, StoreEndpoint storeEndpoint) {
-    dispatch = filter(this::exceptionHandler)
+  public Dispatcher(StatusController statusController, StoreController storeController) {
+    dispatcher = filter(this::exceptionHandler)
         .conclude(dispatch(
             mvc("/status", new StatusView(), statusController),
-            vc("/store/*", storeEndpoint)));
+            mvc("/store/*", new StoreView(), storeController)));
   }
 
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
     try {
-      dispatch.handle(request, response);
+      dispatcher.handle(request, response);
     } catch (Exception e) {
       throw new ServletException(e);
     }

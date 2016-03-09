@@ -17,6 +17,8 @@ package org.example.key_value.repository;
 
 import java.util.*;
 
+import static java.util.stream.Collectors.toSet;
+
 public class Repository {
 
   final static Random random = new Random();
@@ -44,15 +46,15 @@ public class Repository {
     return value;
   }
 
-  public String[] find(Set<String> keys, Set<String> values) {
+  public Set<String> find(Set<String> keys, Set<String> values) {
     if (keys == null && values == null) {
-      return storage.keySet().stream().toArray(String[]::new);
+      return storage.keySet();
     }
     return storage.entrySet().stream()
         .filter(e -> keys != null && keys.contains(e.getKey()))
         .filter(e -> values != null && values.contains(e.getValue()))
         .map(Map.Entry::getValue)
-        .toArray(String[]::new);
+        .collect(toSet());
   }
 
   public String update(String key, String value) {

@@ -16,7 +16,7 @@ limitations under the License.
 package org.example.key_value.resource;
 
 import org.example.key_value.repository.Repository;
-import org.tinyj.web.mvc.WebRenderer;
+import org.tinyj.web.mvc.WebResponse;
 import org.tinyj.web.mvc.resource.WebMVCResource;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,11 +27,11 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.dsl.DSL.*;
 
-public class StoreEndpoint extends WebMVCResource<WebRenderer> {
+public class StoreController extends WebMVCResource<WebResponse> {
 
   Repository repository;
 
-  public StoreEndpoint(Repository repository) {
+  public StoreController(Repository repository) {
     this.repository = repository;
     setMethods(
         delete(this::deleteValue),
@@ -45,15 +45,15 @@ public class StoreEndpoint extends WebMVCResource<WebRenderer> {
     );
   }
 
-  WebRenderer deleteValue(HttpServletRequest request) {
-    return write(repository.delete(getKey(request)));
+  WebResponse<String> deleteValue(HttpServletRequest request) {
+    return WebResponse.wrap(repository.delete(getKey(request)));
   }
 
-  WebRenderer getValue(HttpServletRequest request) {
-    return write(repository.get(getKey(request)));
+  WebResponse<String> getValue(HttpServletRequest request) {
+    return WebResponse.wrap(repository.get(getKey(request)));
   }
 
-  WebRenderer getValues(HttpServletRequest request) {
+  WebResponse<Set<String>> getValues(HttpServletRequest request) {
     final String keyPrefix = getKey(request);
     String[] keysParams = request.getParameterValues("key");
     Set<String> keys = keysParams != null ? Arrays.stream(keysParams).map(key -> keyPrefix + key).collect(toSet())
@@ -62,19 +62,19 @@ public class StoreEndpoint extends WebMVCResource<WebRenderer> {
     Set<String> values = valueParams != null ? Arrays.stream(valueParams).collect(toSet())
                                              : null;
 
-    return write(repository.find(keys, values), strings -> String.join("\r\n", strings));
+    return WebResponse.wrap(repository.find(keys, values));
   }
 
-  WebRenderer postValue(HttpServletRequest request) throws IOException {
+  WebResponse<String> postValue(HttpServletRequest request) throws IOException {
     String value = request.getReader().readLine();
     final String subKey = repository.createKey(value);
 
-    return write(value).withStatus(201).withHeader("Location", subKey);
+    return WebResponse.wrap(value).withStatus(201).withHeader("Location", subKey);
   }
 
-  WebRenderer putValue(HttpServletRequest request) throws IOException {
+  WebResponse<String> putValue(HttpServletRequest request) throws IOException {
     final String value = repository.update(getKey(request), request.getReader().readLine());
-    return write(value);
+    return WebResponse.wrap(value);
   }
 
   String getKey(HttpServletRequest request) {

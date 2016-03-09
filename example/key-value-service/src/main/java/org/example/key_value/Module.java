@@ -16,7 +16,7 @@ limitations under the License.
 package org.example.key_value;
 
 import org.example.key_value.repository.Repository;
-import org.example.key_value.resource.StoreEndpoint;
+import org.example.key_value.resource.StoreController;
 import org.example.key_value.status.DeploymentStatusHolder;
 import org.example.key_value.status.StatusController;
 
@@ -45,7 +45,7 @@ public class Module {
     return new StatusController(repository(), deploymentStatusHolder());
   }
 
-  public StoreEndpoint collectionResource() {
-    return new StoreEndpoint(repository());
+  public StoreController collectionResource() {
+    return new StoreController(repository());
   }
 }
