@@ -30,7 +30,7 @@ public abstract class WebRendererBase implements WebRenderer {
   protected int status;
   protected String contentType;
   protected String encoding;
-  protected Map<String, String[]> headers = new HashMap<>();
+  protected final Map<String, String[]> headers = new HashMap<>();
 
   public WebRendererBase() {
     this.status = 200;
@@ -77,7 +77,7 @@ public abstract class WebRendererBase implements WebRenderer {
    * render response headers (including status line). This method is called
    * before `renderBody`.
    */
-  protected void renderHeader(HttpServletResponse response) {
+  protected void renderHeader(HttpServletResponse response) throws Exception {
     response.setStatus(status);
     for (Map.Entry<String, String[]> header : headers.entrySet()) {
       String name = header.getKey();
