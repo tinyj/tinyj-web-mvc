@@ -1,7 +1,7 @@
 ## org.tinyj.web.mvc
 
 ### HttpRequestHandler
-_[(src)](src/main/java/org/tinyj/web/mvc/HttpRequestHandler.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/HttpRequestHandler.java)_ |
 _(interface)_
 
 The `HttpRequestHandler` is the core abstraction for tinyj-web-mvc. A
@@ -19,8 +19,9 @@ Use `response` to render a HTTP response to `request`.
  implementations will assume that prior to invocation `response` is uncommitted.
 
 ### WebController\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/WebController.java)_
-_(interface)_ | X: Type of the result model.
+_[(src)](src/main/java/org/tinyj/web/mvc/WebController.java)_ |
+_(interface)_ |
+X: Type of the result model.
 
 A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interface. Instead of
  directly rendering into a passed `HttpServletResponse` output parameter a model
@@ -31,7 +32,7 @@ A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interf
 
 
 ### WebMVCBridge\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/WebMVCBridge.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/WebMVCBridge.java)_ |
 X: Type of the result model.  
 _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
@@ -42,7 +43,7 @@ Translate `handler` into a [`HttpRequestHandler`](#httprequesthandler) by using 
  the result model into a `HttpServletResponse`.
 
 ### WebRenderer
-_[(src)](src/main/java/org/tinyj/web/mvc/WebRenderer.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/WebRenderer.java)_ |
 _(interface)_
 
 `WebRender` is a conceptual variation of [`WebView`](#webviewx). Instead of returning a
@@ -62,8 +63,9 @@ Render a HTTP response into `response`.
  implementations will assume that prior to invocation `response` is uncommitted.
 
 ### WebView\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/WebView.java)_
-_(interface)_ | X: model type.
+_[(src)](src/main/java/org/tinyj/web/mvc/WebView.java)_ |
+_(interface)_ |
+X: model type.
 
 A `WebView` is responsible for rendering the result model of an [`WebController`](#webcontrollerx)
  into a HTTP response.
@@ -81,7 +83,7 @@ Render `model` into `response`.
 ## org.tinyj.web.mvc.dsl
 
 ### DSL
-_[(src)](src/main/java/org/tinyj/web/mvc/dsl/DSL.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/dsl/DSL.java)_ |
 _(interface)_
 
 Helper methods to define a domain specific language to simplify creating
@@ -257,7 +259,7 @@ Alias for `filter(HttpRequestFilter...)`.
 ## org.tinyj.web.mvc.filter
 
 ### HttpRequestFilter
-_[(src)](src/main/java/org/tinyj/web/mvc/filter/HttpRequestFilter.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/filter/HttpRequestFilter.java)_ |
 _(interface)_
 
 A HTTP request can be propagated through on ore more `HttpRequestFilter`
@@ -274,7 +276,7 @@ terminates a filter chain by adding [`HttpRequestHandler`](#httprequesthandler) 
  Returns the resulting [`HttpRequestHandler`](#httprequesthandler).
 
 ### HttpRequestFilterChain
-_[(src)](src/main/java/org/tinyj/web/mvc/filter/HttpRequestFilterChain.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/filter/HttpRequestFilterChain.java)_  
 _implements_ [`HttpRequestFilter`](#httprequestfilter)
 
 Composite [`HttpRequestFilter`](#httprequestfilter).
@@ -285,7 +287,7 @@ request will be propagated through `chained` in iteration order.
 ## org.tinyj.web.mvc.render
 
 ### BinaryRenderer
-_[(src)](src/main/java/org/tinyj/web/mvc/render/BinaryRenderer.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/render/BinaryRenderer.java)_  
 _extends_ [`WebRendererBase`](#webrendererbase)
 
 Renderer for HTTP responses containing binary data.
@@ -299,7 +301,7 @@ when rendered everything from `input` will be copied into
  the response's output stream.
 
 ### Streamer
-_[(src)](src/main/java/org/tinyj/web/mvc/render/Streamer.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/render/Streamer.java)_ |
 _(interface)_
 
 Intended to be used in a functor style. I.e. an implementation usually carries
@@ -311,7 +313,7 @@ Write data to `output`. `output` should be ready to be written to.
  invocation.
 
 ### TextRenderer
-_[(src)](src/main/java/org/tinyj/web/mvc/render/TextRenderer.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/render/TextRenderer.java)_  
 _extends_ [`WebRendererBase`](#webrendererbase)
 
 Renderer for HTTP responses containing text. By default `UTF-8` is used as
@@ -326,7 +328,7 @@ when rendered everything from `reader` will be copied to
  the response's writer.
 
 ### Texter
-_[(src)](src/main/java/org/tinyj/web/mvc/render/Texter.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/render/Texter.java)_ |
 _(interface)_
 
 Intended to be used in a functor style. I.e. an implementation usually
@@ -338,7 +340,7 @@ Write data to `writer`. `writer` should be ready to be written to.
  on invocation.
 
 ### WebRendererBase
-_[(src)](src/main/java/org/tinyj/web/mvc/render/WebRendererBase.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/render/WebRendererBase.java)_ |
 _(abstract)_  
 _implements_ [`WebRenderer`](#webrenderer)
 
@@ -374,7 +376,7 @@ Render response body. This method is called after `renderHeader`.
 ## org.tinyj.web.mvc.resource
 
 ### HttpResource
-_[(src)](src/main/java/org/tinyj/web/mvc/resource/HttpResource.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/resource/HttpResource.java)_  
 _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
@@ -410,7 +412,7 @@ default HEAD method handler
 default method handler fallback
 
 ### WebMVCResource\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/resource/WebMVCResource.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/resource/WebMVCResource.java)_  
 _implements_ [`WebController`](#webcontrollerx)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
@@ -425,14 +427,14 @@ Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
 ## org.tinyj.web.mvc.route
 
 ### HttpRequestDispatcher
-_[(src)](src/main/java/org/tinyj/web/mvc/route/HttpRequestDispatcher.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/route/HttpRequestDispatcher.java)_  
 _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
 Dispatches `HttpServletRequest` matching the request's pathInfo against a set
  of routes.
 
 ### WebMVCRequestDispatcher\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/route/WebMVCRequestDispatcher.java)_
+_[(src)](src/main/java/org/tinyj/web/mvc/route/WebMVCRequestDispatcher.java)_  
 _implements_ [`WebController`](#webcontrollerx)
 
 Dispatches `HttpServletRequest` matching the request's pathInfo against a set
