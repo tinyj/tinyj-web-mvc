@@ -49,17 +49,22 @@ public class WebMVCResource<X> implements WebController<X> {
     this.methods.clear();
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::controller)));
     WebController<? extends X> fallback = methods.remove("*");
-    this.fallback = fallback != null ? fallback : request -> null;
+    this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
 
   protected WebMVCResource() {
-    fallback = request -> null;
+    fallback = this::methodNotAllowed;
   }
 
   @Override
   public X handle(HttpServletRequest request) throws Exception {
     return methods.getOrDefault(request.getMethod(), fallback)
         .handle(request);
+  }
+
+  /** default method handler fallback */
+  protected X methodNotAllowed(HttpServletRequest request) {
+    throw new UnsupportedOperationException();
   }
 
   public static class Method<X> {
