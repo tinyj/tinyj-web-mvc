@@ -36,7 +36,7 @@ public class StatusView implements WebView<Status> {
         response.addIntHeader("Retry-After", 300);
         break;
       case SHUTTING_DOWN:
-        response.setStatus(503, "Service is shutting down.");
+        response.setStatus(503);
         break;
     }
     response.setContentType("text/plain");
