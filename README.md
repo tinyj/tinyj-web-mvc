@@ -2,12 +2,13 @@
 # TinyJ WebMVC
 [![build status](https://travis-ci.org/tinyj/tinyj-web-mvc.svg?branch=master)](https://travis-ci.org/tinyj/tinyj-web-mvc)
 
-
 A container agnostic web model-view-controller framework.
+
 
 ## API documentation
 
 You can find the API documentation [here](APIdoc.md).
+
 
 ## License
 

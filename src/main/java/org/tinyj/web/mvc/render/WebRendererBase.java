@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Abstract (#HttpResponseRenderer) facilitating the definition and rendering
+ * Abstract (#WebRenderer) facilitating the definition and rendering
  * of HTTP headers.
  */
 public abstract class WebRendererBase implements WebRenderer {

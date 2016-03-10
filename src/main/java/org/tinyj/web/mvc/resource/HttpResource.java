@@ -27,7 +27,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Dispatches a request to a HTTP resource to a set of (#MethodHandlers).
+ * Dispatches a request to a HTTP resource to a set of method handlers.
  *
  * `HttpResource` comes with three default handlers:
  *
