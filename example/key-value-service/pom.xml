@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
-  <artifactId>tinyj-web-mvc-key-value-service</artifactId>
+  <groupId>org.tinyj.example.web.mvc</groupId>
+  <artifactId>key-value-service</artifactId>
   <version>1.0</version>
 
   <properties>
@@ -15,6 +15,12 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.tinyj.web</groupId>
       <artifactId>tinyj-web-mvc</artifactId>

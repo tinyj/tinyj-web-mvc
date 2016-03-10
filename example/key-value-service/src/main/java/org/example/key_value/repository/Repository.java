@@ -46,14 +46,14 @@ public class Repository {
     return value;
   }
 
-  public Set<String> findKeys(Set<String> keys, Set<String> values) {
-    if (keys == null && values == null) {
+  public Set<String> findKeys(Optional<Set<String>> keys, Optional<Set<String>> values) {
+    if (!keys.isPresent() && !values.isPresent()) {
       return storage.keySet();
     }
     return storage.entrySet().stream()
-        .filter(e -> keys != null && keys.contains(e.getKey()))
-        .filter(e -> values != null && values.contains(e.getValue()))
-        .map(Map.Entry::getValue)
+        .filter(e -> !keys.isPresent() || keys.get().contains(e.getKey()))
+        .filter(e -> !values.isPresent() || values.get().contains(e.getValue()))
+        .map(Map.Entry::getKey)
         .collect(toSet());
   }
 
@@ -62,6 +62,7 @@ public class Repository {
   }
 
   String createKey() {
-    return Long.toHexString(random.nextLong());
+    final String key = Long.toHexString(random.nextLong());
+    return "0000000000000000".substring(0, 16 - key.length()) + key;
   }
 }

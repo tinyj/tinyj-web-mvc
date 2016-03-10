@@ -22,6 +22,7 @@ import org.tinyj.web.mvc.resource.WebMVCResource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -55,12 +56,10 @@ public class StoreController extends WebMVCResource<WebResponse> {
 
   WebResponse<Set<String>> getValues(HttpServletRequest request) {
     final String keyPrefix = getKey(request);
-    String[] keysParams = request.getParameterValues("key");
-    Set<String> keys = keysParams != null ? Arrays.stream(keysParams).map(key -> keyPrefix + key).collect(toSet())
-                                          : null;
-    String[] valueParams = request.getParameterValues("value");
-    Set<String> values = valueParams != null ? Arrays.stream(valueParams).collect(toSet())
-                                             : null;
+    Optional<Set<String>> keys = Optional.ofNullable(request.getParameterValues("key"))
+        .map(x -> Arrays.stream(x).map(key -> keyPrefix + key).collect(toSet()));
+    Optional<Set<String>> values = Optional.ofNullable(request.getParameterValues("value"))
+        .map(x -> Arrays.stream(x).map(key -> keyPrefix + key).collect(toSet()));
 
     return WebResponse.wrap(repository.findKeys(keys, values).stream()
         .map(k -> request.getRequestURL().append('/').append(k).toString())

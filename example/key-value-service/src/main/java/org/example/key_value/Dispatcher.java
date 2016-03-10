@@ -54,7 +54,7 @@ public class Dispatcher implements HttpRequestHandler {
       next.handle(request, response);
     } catch (IllegalArgumentException e) {
       if (!response.isCommitted()) {
-        sendErrorWithBody(response, 406, e.getMessage());
+        sendErrorWithBody(response, 400, e.getMessage());
       }
     } catch (NoSuchElementException e) {
       if (!response.isCommitted()) {

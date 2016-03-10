@@ -25,22 +25,24 @@ public class StatusView implements WebView<Status> {
   public void render(Status model, HttpServletResponse response) throws Exception {
     switch (model.deploymentStatus) {
       case BOOTING:
-        response.setStatus(503, "Service is still booting up, please try again later.");
+        response.setStatus(503);
+        response.addIntHeader("Retry-After", 30);
         break;
       case RUNNING:
         response.setStatus(200);
         break;
       case PAUSED:
-        response.setStatus(503, "Service temporarily unavailable.");
+        response.setStatus(503);
+        response.addIntHeader("Retry-After", 300);
         break;
       case SHUTTING_DOWN:
-        response.setStatus(410, "Service is shutting down.");
+        response.setStatus(503, "Service is shutting down.");
         break;
     }
     response.setContentType("text/plain");
     response.setCharacterEncoding("UTF-8");
     response.getWriter()
-        .append("entry count:").append(Integer.toString(model.entryCount)).append("\r\n")
-        .append("deploy status:").append(model.deploymentStatus.name()).append("\r\n");
+        .append("service.state: ").append(model.deploymentStatus.name()).append("\r\n")
+        .append("repository.entry.count: ").append(Integer.toString(model.entryCount)).append("\r\n");
   }
 }

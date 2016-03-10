@@ -12,6 +12,6 @@
 
   <modules>
     <module>key-value-service</module>
-    <module>servlet</module>
+    <module>servlet-bridge</module>
   </modules>
 </project>
