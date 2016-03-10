@@ -12,8 +12,8 @@ You can find the API documentation [here](APIdoc.md).
 
 ## Examples
 
-[key-value-service](example/key-value-service) implementation of a simple REST conform key value store.
-[servlet-bridge](example/servlet-bridge) running the key-value-service example inside a servlet container.
+- [key-value-service](example/key-value-service) implementation of a simple REST conform key value store.
+- [servlet-bridge](example/servlet-bridge) running the key-value-service example inside a servlet container.
 
 ## License
 
