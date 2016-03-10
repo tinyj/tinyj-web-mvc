@@ -4,4 +4,5 @@ jdk:
 install:
   - mvn package -P sonatype -D skipTests
 script:
-  - mvn verify -P sonatype
+  - mvn install -P sonatype
+  - mvn -f example versions:use-latest-versions -Dincludes=org.tinyj.web:tinyj-web-mvc -DallowSnapshots=true verify
