@@ -33,9 +33,18 @@ public class HttpRequestDispatcher implements HttpRequestHandler {
   protected final HttpRequestRouter<HttpRequestHandler> router;
 
   public HttpRequestDispatcher(Route... routes) {
+    router = new HttpRequestRouter<>();
+    setRoutes(routes);
+  }
+
+  protected HttpRequestDispatcher() {
+    router = new HttpRequestRouter<>();
+  }
+
+  protected final void setRoutes(Route... routes) {
     Map<String, HttpRequestHandler> routingTable = stream(routes).collect(toMap(r -> r.route, r -> r.target));
     routingTable.putIfAbsent("/*", this::notFound);
-    router = new HttpRequestRouter<>(routingTable);
+    router.setRoutes(routingTable);
   }
 
   @Override

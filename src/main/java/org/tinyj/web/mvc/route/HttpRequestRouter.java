@@ -26,7 +26,15 @@ public class HttpRequestRouter<T> {
 
   protected final Map<String, T> routes = new HashMap<>();
 
+  public HttpRequestRouter() {
+  }
+
   public HttpRequestRouter(Map<String, T> routes) {
+    this.routes.putAll(routes);
+  }
+
+  public void setRoutes(Map<String, T> routes) {
+    this.routes.clear();
     this.routes.putAll(routes);
   }
 

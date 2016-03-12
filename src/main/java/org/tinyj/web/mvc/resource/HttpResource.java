@@ -58,7 +58,7 @@ public class HttpResource implements HttpRequestHandler {
     fallback = this::methodNotAllowed;
   }
 
-  protected void setMethods(Method[] handlers) {
+  protected final void setMethods(Method[] handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
     if (methods.containsKey("GET")) {

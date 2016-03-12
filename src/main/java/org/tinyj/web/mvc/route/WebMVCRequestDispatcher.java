@@ -33,8 +33,18 @@ public class WebMVCRequestDispatcher<X> implements WebController<X> {
 
   @SafeVarargs
   public WebMVCRequestDispatcher(final Route<? extends X>... routes) {
+    router = new HttpRequestRouter<>();
+    setRoutes(routes);
+  }
+
+  protected WebMVCRequestDispatcher() {
+    router = new HttpRequestRouter<>();
+  }
+
+  @SafeVarargs
+  protected final void setRoutes(Route<? extends X>... routes) {
     Map<String, WebController<? extends X>> routingTable = stream(routes).collect(toMap(r -> r.route, r -> r.target));
-    router = new HttpRequestRouter<>(routingTable);
+    router.setRoutes(routingTable);
   }
 
   @Override
