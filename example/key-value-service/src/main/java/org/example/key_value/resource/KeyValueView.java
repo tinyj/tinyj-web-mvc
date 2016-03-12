@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class StoreView extends WebResponseViewBase {
+public class KeyValueView extends WebResponseViewBase {
 
   @Override
   protected void renderBody(WebResponse webResponse, HttpServletResponse response) throws Exception {
@@ -35,7 +35,7 @@ public class StoreView extends WebResponseViewBase {
       for (Object entry : (Collection<?>) model) {
         writer.append(entry.toString()).append("\r\n");
       }
-    } else {
+    } else if (model != null) {
       final String body = model.toString();
       if (body.isEmpty()) {
         response.setStatus(204);

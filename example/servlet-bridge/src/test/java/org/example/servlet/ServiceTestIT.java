@@ -160,7 +160,7 @@ public class ServiceTestIT {
     // when
     response = webTarget.path("store").path("key").request().delete();
 
-    //then
+    // then
     assertResponse(response, OK, "different putted value");
 
     // when
@@ -174,6 +174,47 @@ public class ServiceTestIT {
 
     // then
     assertResponse(response, NOT_FOUND, "Not found: key\n");
+  }
+
+  @Test
+  public void options_for_collection() throws Exception {
+
+    final Response response = webTarget.path("store").request().options();
+
+    assertResponse(response, OK, "");
+    assertThat(response.getHeaderString("Content-Length")).contains("0");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "POST");
+  }
+
+  @Test
+  public void method_not_allowed_response_for_collection() throws Exception {
+
+    final Response response = webTarget.path("store").request().delete();
+
+    assertResponse(response, METHOD_NOT_ALLOWED, "");
+    assertThat(response.getHeaderString("Content-Length")).contains("0");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "POST");
+  }
+
+
+  @Test
+  public void options_for_key() throws Exception {
+
+    final Response response = webTarget.path("store").path("key").request().options();
+
+    assertResponse(response, OK, "");
+    assertThat(response.getHeaderString("Content-Length")).contains("0");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "PUT", "DELETE");
+  }
+
+  @Test
+  public void method_not_allowed_response_for_key() throws Exception {
+
+    final Response response = webTarget.path("store").path("key").request().post(text(""));
+
+    assertResponse(response, METHOD_NOT_ALLOWED, "");
+    assertThat(response.getHeaderString("Content-Length")).contains("0");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "PUT", "DELETE");
   }
 
   private void assertResponse(Response response, Response.Status status, String messageBody) {

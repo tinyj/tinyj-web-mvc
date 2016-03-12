@@ -16,6 +16,7 @@ limitations under the License.
 package org.example.key_value;
 
 import org.example.key_value.repository.Repository;
+import org.example.key_value.resource.KeyValueController;
 import org.example.key_value.resource.StoreController;
 import org.example.key_value.status.DeploymentStatusHolder;
 import org.example.key_value.status.StatusController;
@@ -35,17 +36,22 @@ public class Module {
     return repository;
   }
 
+
   // prototypes
 
   public Dispatcher dispatcher() {
-    return new Dispatcher(statusController(), collectionResource());
+    return new Dispatcher(statusController(), storeController(), keyValueController());
   }
 
   public StatusController statusController() {
     return new StatusController(repository(), deploymentStatusHolder());
   }
 
-  public StoreController collectionResource() {
+  public StoreController storeController() {
     return new StoreController(repository());
+  }
+
+  public KeyValueController keyValueController() {
+    return new KeyValueController(repository());
   }
 }

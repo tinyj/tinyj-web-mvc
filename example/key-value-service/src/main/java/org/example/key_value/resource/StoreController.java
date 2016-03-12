@@ -17,7 +17,7 @@ package org.example.key_value.resource;
 
 import org.example.key_value.repository.Repository;
 import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.resource.WebMVCResource;
+import org.tinyj.web.mvc.route.WebMVCRequestDispatcher;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -28,34 +28,26 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.dsl.DSL.*;
 
-public class StoreController extends WebMVCResource<WebResponse> {
+public class StoreController extends WebMVCRequestDispatcher<WebResponse<?>> {
 
-  Repository repository;
+  final Repository repository;
 
   public StoreController(Repository repository) {
     this.repository = repository;
-    setMethods(
-        delete(this::deleteValue),
-        get(dispatch(
-            route("", this::getValues),
-            route("/*", this::getValue))),
-        post(dispatch(route("", this::postValue), route("/*", req -> {
-          throw new UnsupportedOperationException();
-        }))),
-        put(this::putValue)
+
+    setRoutes(
+        controller("",
+            get(this::getValues),
+            post(this::postValue),
+            options(req -> WebResponse.<Void>wrap(null)
+                .withHeader("Content-Length", "0")
+                .withHeader("Allow", "GET, POST"))
+        )
     );
   }
 
-  WebResponse<String> deleteValue(HttpServletRequest request) {
-    return WebResponse.wrap(repository.delete(getKey(request)));
-  }
-
-  WebResponse<String> getValue(HttpServletRequest request) {
-    return WebResponse.wrap(repository.get(getKey(request)));
-  }
-
   WebResponse<Set<String>> getValues(HttpServletRequest request) {
-    final String keyPrefix = getKey(request);
+    final String keyPrefix = "";
     Optional<Set<String>> keys = Optional.ofNullable(request.getParameterValues("key"))
         .map(x -> Arrays.stream(x).map(key -> keyPrefix + key).collect(toSet()));
     Optional<Set<String>> values = Optional.ofNullable(request.getParameterValues("value"))
@@ -72,20 +64,5 @@ public class StoreController extends WebMVCResource<WebResponse> {
 
     return WebResponse.wrap(value)
         .withStatus(201).withHeader("Location", request.getRequestURL().append('/').append(subKey).toString());
-  }
-
-  WebResponse<String> putValue(HttpServletRequest request) throws IOException {
-    final String value = request.getReader().readLine();
-    final String oldValue = repository.update(getKey(request), value);
-    final WebResponse<String> response = WebResponse.wrap(value);
-    if (oldValue == null) {
-      response.withStatus(201).withHeader("Location", request.getRequestURL().toString());
-    }
-    return response;
-  }
-
-  String getKey(HttpServletRequest request) {
-    String pathInfo = request.getPathInfo();
-    return pathInfo != null ? pathInfo.substring(1, pathInfo.length()) : "";
   }
 }
