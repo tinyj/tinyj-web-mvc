@@ -16,16 +16,17 @@ limitations under the License.
 package org.example.key_value.resource;
 
 import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.WebResponseViewBase;
+import org.tinyj.web.mvc.WebResponseView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class KeyValueView extends WebResponseViewBase {
+public class KeyValueView extends WebResponseView {
 
   @Override
-  protected void renderBody(WebResponse webResponse, HttpServletResponse response) throws Exception {
+  protected void renderBody(WebResponse webResponse, HttpServletRequest request, HttpServletResponse response) throws Exception {
     final Object model = webResponse.getModel();
     final PrintWriter writer = response.getWriter();
     if (model instanceof Collection<?>) {

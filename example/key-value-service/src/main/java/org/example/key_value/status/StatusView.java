@@ -17,12 +17,13 @@ package org.example.key_value.status;
 
 import org.tinyj.web.mvc.WebView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class StatusView implements WebView<Status> {
 
   @Override
-  public void render(Status model, HttpServletResponse response) throws Exception {
+  public void render(Status model, HttpServletRequest request, HttpServletResponse response) throws Exception {
     switch (model.deploymentStatus) {
       case BOOTING:
         response.setStatus(503);

@@ -26,11 +26,13 @@ public class WebResponse<T> {
   protected final Map<String, String[]> headers = new HashMap<>();
   protected final T model;
 
+  /** Create new `WebResponse` for `model`. Status code defaults to `200 OK`. */
   public WebResponse(T model) {
     this.status = 200;
     this.model = model;
   }
 
+  /** Create new `WebResponse` for `model`. Status code defaults to `200 OK`. */
   public static <T> WebResponse<T> wrap(T model) {
     return new WebResponse<>(model);
   }
@@ -42,8 +44,8 @@ public class WebResponse<T> {
   }
 
   /**
-   * Response will be rendered with the _Content-Type_ header set to
-   * `contentType`. This overrides _Content-Type_ headers set with `withHeader`
+   * Response will be rendered with the _Content-Type_ header set to `contentType`.
+   * This overrides _Content-Type_ headers set with `withHeader`.
    */
   public WebResponse<T> withContentType(String contentType) {
     this.contentType = contentType;
@@ -60,28 +62,33 @@ public class WebResponse<T> {
     return this;
   }
 
-  /** response will be rendered with a `name`-header line for each passed value. */
+  /** Response will be rendered with a `name`-header line for each passed value. */
   public WebResponse<T> withHeader(String name, String... values) {
     this.headers.put(name, values);
     return this;
   }
 
+  /** Get response status. */
   public int getStatus() {
     return status;
   }
 
+  /** Get response content type. */
   public String getContentType() {
     return contentType;
   }
 
+  /** Get response encoding. */
   public String getEncoding() {
     return encoding;
   }
 
+  /** Get response headers. */
   public Map<String, String[]> getHeaders() {
     return headers;
   }
 
+  /** Get wrapped model. */
   public T getModel() {
     return model;
   }

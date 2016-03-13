@@ -15,29 +15,27 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.render;
 
-import org.tinyj.web.mvc.WebRenderer;
+import org.tinyj.web.mvc.HttpRequestHandler;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Abstract (#WebRenderer) facilitating the definition and rendering
- * of HTTP headers.
- */
-public abstract class WebRendererBase implements WebRenderer {
+/** Abstract class facilitating the definition and rendering of HTTP headers. */
+public abstract class HttpRenderer implements HttpRequestHandler {
 
   protected int status;
   protected String contentType;
   protected String encoding;
   protected final Map<String, String[]> headers = new HashMap<>();
 
-  public WebRendererBase() {
+  public HttpRenderer() {
     this.status = 200;
   }
 
   /** Response will be rendered with status code `status`. */
-  public WebRendererBase withStatus(int status) {
+  public HttpRenderer withStatus(int status) {
     this.status = status;
     return this;
   }
@@ -46,7 +44,7 @@ public abstract class WebRendererBase implements WebRenderer {
    * Response will be rendered with the _Content-Type_ header set to
    * `contentType`. This overrides _Content-Type_ headers set with `withHeader`
    */
-  public WebRendererBase withContentType(String contentType) {
+  public HttpRenderer withContentType(String contentType) {
     this.contentType = contentType;
     return this;
   }
@@ -56,28 +54,28 @@ public abstract class WebRendererBase implements WebRenderer {
    * the response is rendered using the respond's writer `encoding` is used as
    * character encoding.
    */
-  public WebRendererBase withEncoding(String encoding) {
+  public HttpRenderer withEncoding(String encoding) {
     this.encoding = encoding;
     return this;
   }
 
   /** response will be rendered with a `name`-header line for each passed value. */
-  public WebRendererBase withHeader(String name, String... values) {
+  public HttpRenderer withHeader(String name, String... values) {
     this.headers.put(name, values);
     return this;
   }
 
   @Override
-  public void render(HttpServletResponse response) throws Exception {
-    renderHeader(response);
-    renderBody(response);
+  public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    renderHeader(request, response);
+    renderBody(request, response);
   }
 
   /**
    * render response headers (including status line). This method is called
    * before `renderBody`.
    */
-  protected void renderHeader(HttpServletResponse response) throws Exception {
+  protected void renderHeader(HttpServletRequest request, HttpServletResponse response) throws Exception {
     response.setStatus(status);
     for (Map.Entry<String, String[]> header : headers.entrySet()) {
       String name = header.getKey();
@@ -94,5 +92,5 @@ public abstract class WebRendererBase implements WebRenderer {
   }
 
   /** Render response body. This method is called after `renderHeader`. */
-  protected abstract void renderBody(HttpServletResponse response) throws Exception;
+  protected abstract void renderBody(HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

@@ -17,8 +17,10 @@ package org.tinyj.web.mvc.render;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.tinyj.test.servlet.HttpServletRequestMock;
 import org.tinyj.test.servlet.HttpServletResponseMock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,17 +31,19 @@ public class TextRendererTest {
 
   private TextRenderer renderer;
   private HttpServletResponseMock response;
+  private HttpServletRequest request;
 
   @BeforeMethod
   public void setUp() throws Exception {
     renderer = new TextRenderer(out -> out.write(BODY));
     response = new HttpServletResponseMock();
+    request = new HttpServletRequestMock();
   }
 
   @Test
   public void by_default_the_content_type_is_text_plain__charset_utf8() throws Exception {
     // when
-    renderer.render(response);
+    renderer.handle(request, response);
     response.close();
 
     // then
@@ -50,7 +54,7 @@ public class TextRendererTest {
   @Test
   public void the_streamer_is_applied_to_render_the_response_body() throws Exception {
     // when
-    renderer.render(response);
+    renderer.handle(request, response);
     response.close();
 
     // then
@@ -63,7 +67,7 @@ public class TextRendererTest {
     renderer.withEncoding("ISO-8859-1");
 
     // when
-    renderer.render(response);
+    renderer.handle(request, response);
     response.close();
 
     // then

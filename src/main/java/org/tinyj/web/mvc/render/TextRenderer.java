@@ -15,6 +15,7 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.render;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Reader;
@@ -25,7 +26,7 @@ import java.io.Writer;
  * character encoding.
  */
 public class TextRenderer
-    extends WebRendererBase {
+    extends HttpRenderer {
 
   protected final Texter texter;
 
@@ -52,7 +53,7 @@ public class TextRenderer
   }
 
   @Override
-  public void renderBody(HttpServletResponse response) throws Exception {
+  public void renderBody(HttpServletRequest request, HttpServletResponse response) throws Exception {
     texter.writeTo(response.getWriter());
   }
 

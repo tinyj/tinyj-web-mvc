@@ -1,5 +1,6 @@
 package org.tinyj.web.mvc;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -21,5 +22,5 @@ public interface WebView<X> {
    * Even though it's not a strict requirement from this interface, most
    * implementations will assume that prior to invocation `response` is uncommitted.
    */
-  void render(X model, HttpServletResponse response) throws Exception;
+  void render(X model, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

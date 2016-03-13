@@ -31,36 +31,25 @@ A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interf
 ⇒ *`X`* _(the result model)_  
 
 
-### WebMVCBridge\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/WebMVCBridge.java)_ |
-X: Type of the result model.  
-_implements_ [`HttpRequestHandler`](#httprequesthandler)
+### WebResponseView\<T>
+_[(src)](src/main/java/org/tinyj/web/mvc/WebResponseView.java)_ |
+_(abstract)_  
+_implements_ [`WebView`](#webviewx)
 
-Bridges [`WebController`](#webcontrollerx) to [`HttpRequestHandler`](#httprequesthandler).
+Base class for [`WebView`](#webviewx) implementations rendering [`WebResponse`](#webresponset).
 
-**`WebMVCBridge(WebView view, WebController handler)`** _(constructor)_  
-Translate `handler` into a [`HttpRequestHandler`](#httprequesthandler) by using `view` to render
- the result model into a `HttpServletResponse`.
+**`render(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+Calls `renderHeader()` and `renderBody()`.
 
-### WebRenderer
-_[(src)](src/main/java/org/tinyj/web/mvc/WebRenderer.java)_ |
-_(interface)_
+**`renderHeader(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+Default implementation sets the response status and calls
+ `response.setHeader(...)` for each header passed to `model`.
 
-`WebRender` is a conceptual variation of [`WebView`](#webviewx). Instead of returning a
- result model a [`WebController`](#webcontrollerx) returns a `WebRenderer` carrying all the state
- necessary to render a HTTP response.
+ After that `response.setContentType(...)` and `response.setEncoding(...)` are
+ called with the values passed to `model`.
 
- This allows for more control of the [`WebController`](#webcontrollerx) over the final HTTP response.
-
-**`render(HttpServletResponse response)`**  
-Render a HTTP response into `response`.
-
- By passing `response` all claims onto `response` are yielded. I.e. after
- returning `response` may be in any state, it may or may not be committed,
- data may or may not been send.
-
- Even though it's not a strict requirement from this interface, most
- implementations will assume that prior to invocation `response` is uncommitted.
+**`renderBody(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+Render the response body. This method is called after `renderHeader(...)`.
 
 ### WebView\<X>
 _[(src)](src/main/java/org/tinyj/web/mvc/WebView.java)_ |
@@ -70,7 +59,7 @@ X: model type.
 A `WebView` is responsible for rendering the result model of an [`WebController`](#webcontrollerx)
  into a HTTP response.
 
-**`render(X model, HttpServletResponse response)`**  
+**`render(X model, HttpServletRequest request, HttpServletResponse response)`**  
 Render `model` into `response`.
 
  By passing `response` all claims onto `response` are yielded. I.e. after
@@ -92,51 +81,6 @@ Helper methods to define a domain specific language to simplify creating
 **`mvc(WebView view, WebController controller)`**  
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `new MVCBridge(view, controller)`.
-
-**`vc(WebController controller)`**  
-⇒ *`HttpRequestHandler`*  
-Bridge for the view-controller pattern, where, instead of a model, the
- `controller` returns a renderer prepared to render the response.
-
-**`dispatch(Route[] routes)`**  
-⇒ *`HttpRequestHandler`*  
-Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httprequestdispatcher).
-
-**`route(String target, HttpRequestHandler handler)`**  
-⇒ *`HttpRequestDispatcher.Route`*  
-Creates a dispatcher routing entry.
-
-**`resource(String target, Method[] methods)`**  
-⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, resource(methods))`.
-
-**`mvc(String target, WebView view, WebController controller)`**  
-⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, mvc(view, controller))`.
-
-**`vc(String target, WebController controller)`**  
-⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, vc(controller))`.
-
-**`dispatch(String target, Route[] routes)`**  
-⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, dispatch(routes))`.
-
-**`dispatch(Route[] routes)`**  
-⇒ *`WebController`*  
-Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#webmvcrequestdispatcherx)
-
-**`route(String path, WebController controller)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
-Creates a dispatcher routing entry
-
-**`controller(String path, Method[] methods)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
-Shortcut for `route(target, controller(methods))`.
-
-**`dispatch(String path, Route[] routes)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
-Shortcut for `route(target, dispatch(routes))`.
 
 **`resource(Method[] handlers)`**  
 ⇒ *`HttpResource`*  
@@ -210,10 +154,56 @@ Shortcut for `new WebMVCResource.Method("POST", handler)`.
 ⇒ *`WebMVCResource.Method`*  
 Shortcut for `new WebMVCResource.Method("PUT", handler)`.
 
-**`view(Function rendererFactory)`**  
-⇒ *`WebView`*  
-creates a View that applies the renderer provided by `rendererFactory` for
- the model to the response.
+**`dispatch(Route[] routes)`**  
+⇒ *`HttpRequestDispatcher`*  
+Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httprequestdispatcher).
+
+**`route(String target, HttpRequestHandler handler)`**  
+⇒ *`HttpRequestDispatcher.Route`*  
+Creates a dispatcher routing entry.
+
+**`resource(String target, Method[] methods)`**  
+⇒ *`HttpRequestDispatcher.Route`*  
+Shortcut for `route(target, resource(methods))`.
+
+**`mvc(String target, WebView view, WebController controller)`**  
+⇒ *`HttpRequestDispatcher.Route`*  
+Shortcut for `route(target, mvc(view, controller))`.
+
+**`dispatch(String target, Route[] routes)`**  
+⇒ *`HttpRequestDispatcher.Route`*  
+Shortcut for `route(target, dispatch(routes))`.
+
+**`dispatch(Route[] routes)`**  
+⇒ *`WebMVCRequestDispatcher`*  
+Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#webmvcrequestdispatcherx)
+
+**`route(String path, WebController controller)`**  
+⇒ *`WebMVCRequestDispatcher.Route`*  
+Creates a dispatcher routing entry
+
+**`controller(String path, Method[] methods)`**  
+⇒ *`WebMVCRequestDispatcher.Route`*  
+Shortcut for `route(target, controller(methods))`.
+
+**`dispatch(String path, Route[] routes)`**  
+⇒ *`WebMVCRequestDispatcher.Route`*  
+Shortcut for `route(target, dispatch(routes))`.
+
+**`filter()`**  
+Dummy to avoid defining empty filters.
+
+**`filter(HttpRequestFilter filter)`**  
+⇒ *`HttpRequestFilter`*  
+Shortcut to specify [`HttpRequestFilter`](#httprequestfilter) lambda style. Returns its argument.
+
+**`filter(HttpRequestFilter[] chainedFilters)`**  
+⇒ *`HttpRequestFilter`*  
+Shortcut for `new HttpRequestFilterChain(chainedFilters)`.
+
+**`chain(HttpRequestFilter[] chainedFilters)`**  
+⇒ *`HttpRequestFilter`*  
+Alias for `filter(HttpRequestFilter...)`.
 
 **`streamWith(Streamer streamer)`**  
 ⇒ *`BinaryRenderer`*  
@@ -241,21 +231,6 @@ Renderer writing `toWrite` converted into a string using `stringifier` to
 Renderer writing `toWrite` converted into a string using `toWrite.toString`
  to the response writer.
 
-**`filter()`**  
-Dummy to avoid defining empty filters.
-
-**`filter(HttpRequestFilter filter)`**  
-⇒ *`HttpRequestFilter`*  
-Shortcut to specify [`HttpRequestFilter`](#httprequestfilter) lambda style. Returns its argument.
-
-**`filter(HttpRequestFilter[] chainedFilters)`**  
-⇒ *`HttpRequestFilter`*  
-Shortcut for `new HttpRequestFilterChain(chainedFilters)`.
-
-**`chain(HttpRequestFilter[] chainedFilters)`**  
-⇒ *`HttpRequestFilter`*  
-Alias for `filter(HttpRequestFilter...)`.
-
 ## org.tinyj.web.mvc.filter
 
 ### HttpRequestFilter
@@ -270,10 +245,10 @@ A HTTP request can be propagated through on ore more `HttpRequestFilter`
 **`filter(HttpServletRequest request, HttpServletResponse response, HttpRequestHandler next)`**  
 An implementation can stop request propagation by not invoking `next`.
 
-**`conclude(HttpRequestHandler eoc)`**  
+**`terminate(HttpRequestHandler eoc)`**  
 ⇒ *`HttpRequestHandler`*  
-terminates a filter chain by adding [`HttpRequestHandler`](#httprequesthandler) `eoc` at it's end.
- Returns the resulting [`HttpRequestHandler`](#httprequesthandler).
+terminates the filter chain with `eoc`. Returns the resulting
+ [`HttpRequestHandler`](#httprequesthandler).
 
 ### HttpRequestFilterChain
 _[(src)](src/main/java/org/tinyj/web/mvc/filter/HttpRequestFilterChain.java)_  
@@ -288,7 +263,7 @@ request will be propagated through `chained` in iteration order.
 
 ### BinaryRenderer
 _[(src)](src/main/java/org/tinyj/web/mvc/render/BinaryRenderer.java)_  
-_extends_ [`WebRendererBase`](#webrendererbase)
+_extends_ [`HttpRenderer`](#httprenderer)
 
 Renderer for HTTP responses containing binary data.
 
@@ -299,6 +274,39 @@ when rendered the response's output stream will be passed
 **`BinaryRenderer(InputStream input)`** _(constructor)_  
 when rendered everything from `input` will be copied into
  the response's output stream.
+
+### HttpRenderer
+_[(src)](src/main/java/org/tinyj/web/mvc/render/HttpRenderer.java)_ |
+_(abstract)_  
+_implements_ [`HttpRequestHandler`](#httprequesthandler)
+
+Abstract class facilitating the definition and rendering of HTTP headers.
+
+**`withStatus(int status)`**  
+⇒ *`HttpRenderer`*  
+Response will be rendered with status code `status`.
+
+**`withContentType(String contentType)`**  
+⇒ *`HttpRenderer`*  
+Response will be rendered with the _Content-Type_ header set to
+ `contentType`. This overrides _Content-Type_ headers set with `withHeader`
+
+**`withEncoding(String encoding)`**  
+⇒ *`HttpRenderer`*  
+When rendered `encoding` will be added to the _Content-Type_ header. If
+ the response is rendered using the respond's writer `encoding` is used as
+ character encoding.
+
+**`withHeader(String name, String[] values)`**  
+⇒ *`HttpRenderer`*  
+response will be rendered with a `name`-header line for each passed value.
+
+**`renderHeader(HttpServletRequest request, HttpServletResponse response)`**  
+render response headers (including status line). This method is called
+ before `renderBody`.
+
+**`renderBody(HttpServletRequest request, HttpServletResponse response)`**  
+Render response body. This method is called after `renderHeader`.
 
 ### Streamer
 _[(src)](src/main/java/org/tinyj/web/mvc/render/Streamer.java)_ |
@@ -314,7 +322,7 @@ Write data to `output`. `output` should be ready to be written to.
 
 ### TextRenderer
 _[(src)](src/main/java/org/tinyj/web/mvc/render/TextRenderer.java)_  
-_extends_ [`WebRendererBase`](#webrendererbase)
+_extends_ [`HttpRenderer`](#httprenderer)
 
 Renderer for HTTP responses containing text. By default `UTF-8` is used as
  character encoding.
@@ -339,40 +347,6 @@ Write data to `writer`. `writer` should be ready to be written to.
  By contract an implementation is required to not call `writer.close()`
  on invocation.
 
-### WebRendererBase
-_[(src)](src/main/java/org/tinyj/web/mvc/render/WebRendererBase.java)_ |
-_(abstract)_  
-_implements_ [`WebRenderer`](#webrenderer)
-
-Abstract [`WebRenderer`](#webrenderer) facilitating the definition and rendering
- of HTTP headers.
-
-**`withStatus(int status)`**  
-⇒ *`WebRendererBase`*  
-Response will be rendered with status code `status`.
-
-**`withContentType(String contentType)`**  
-⇒ *`WebRendererBase`*  
-Response will be rendered with the _Content-Type_ header set to
- `contentType`. This overrides _Content-Type_ headers set with `withHeader`
-
-**`withEncoding(String encoding)`**  
-⇒ *`WebRendererBase`*  
-When rendered `encoding` will be added to the _Content-Type_ header. If
- the response is rendered using the respond's writer `encoding` is used as
- character encoding.
-
-**`withHeader(String name, String[] values)`**  
-⇒ *`WebRendererBase`*  
-response will be rendered with a `name`-header line for each passed value.
-
-**`renderHeader(HttpServletResponse response)`**  
-render response headers (including status line). This method is called
- before `renderBody`.
-
-**`renderBody(HttpServletResponse response)`**  
-Render response body. This method is called after `renderHeader`.
-
 ## org.tinyj.web.mvc.resource
 
 ### HttpResource
@@ -396,6 +370,9 @@ Create new `HttpResource` dispatching requests to `handlers`. A handler
  for `*` is removed from the list an registered as fallback handler.
 
  If `handlers` contains multiple handlers for the same method the later wins.
+
+**`setMethods(Method[] handlers)`**  
+register method handlers
 
 **`supportedMethods()`**  
 ⇒ *`Set`* _(the supported Methods)_  
@@ -423,6 +400,13 @@ Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
  return `null` as result model.
 
  If `handlers` contains multiple handlers for the same method the later wins.
+
+**`setMethods(Method[] handlers)`**  
+register method handlers
+
+**`methodNotAllowed(HttpServletRequest request)`**  
+⇒ *`X`*  
+default method handler fallback
 
 ## org.tinyj.web.mvc.route
 

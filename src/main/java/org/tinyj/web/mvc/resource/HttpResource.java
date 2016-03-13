@@ -54,11 +54,12 @@ public class HttpResource implements HttpRequestHandler {
     setMethods(handlers);
   }
 
-  public HttpResource() {
+  protected HttpResource() {
     fallback = this::methodNotAllowed;
   }
 
-  protected final void setMethods(Method[] handlers) {
+  /** register method handlers */
+  protected final void setMethods(Method... handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
     if (methods.containsKey("GET")) {

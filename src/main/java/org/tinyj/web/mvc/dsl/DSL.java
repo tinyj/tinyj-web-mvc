@@ -15,7 +15,9 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.dsl;
 
-import org.tinyj.web.mvc.*;
+import org.tinyj.web.mvc.HttpRequestHandler;
+import org.tinyj.web.mvc.WebController;
+import org.tinyj.web.mvc.WebView;
 import org.tinyj.web.mvc.filter.HttpRequestFilter;
 import org.tinyj.web.mvc.filter.HttpRequestFilterChain;
 import org.tinyj.web.mvc.render.BinaryRenderer;
@@ -39,82 +41,14 @@ import static java.util.Arrays.asList;
  */
 public interface DSL {
 
+  /*/
+  #### (#HttpRequestHandler) factories
+  /*/
 
   /** Shortcut for `new MVCBridge(view, controller)`. */
-  static <X> HttpRequestHandler mvc(WebView<X> view, WebController<X> controller) {
-    return new WebMVCBridge<>(view, controller);
+  static <X> HttpRequestHandler mvc(WebView<? super X> view, WebController<? extends X> controller) {
+    return ((request, response) -> view.render(controller.handle(request), request, response));
   }
-
-  /**
-   * Bridge for the view-controller pattern, where, instead of a model, the
-   * `controller` returns a renderer prepared to render the response.
-   */
-  static <X extends WebRenderer> HttpRequestHandler vc(WebController<X> controller) {
-    return new WebMVCBridge<>(WebRenderer::render, controller);
-  }
-
-
-  /*/
-  #### (#HttpRequestDispatcher) and (#WebMVCRequestDispatcher) factories
-  /*/
-
-  /** Dispatch requests based on their path info. See (#HttpRequestDispatcher). */
-  static HttpRequestHandler dispatch(HttpRequestDispatcher.Route... routes) {
-    return new HttpRequestDispatcher(routes);
-  }
-
-  /** Creates a dispatcher routing entry. */
-  static HttpRequestDispatcher.Route route(String target, HttpRequestHandler handler) {
-    return new HttpRequestDispatcher.Route(target, handler);
-  }
-
-  /** Shortcut for `route(target, resource(methods))`. */
-  static HttpRequestDispatcher.Route resource(String target, HttpResource.Method... methods) {
-    return new HttpRequestDispatcher.Route(target, new HttpResource(methods));
-  }
-
-  /** Shortcut for `route(target, mvc(view, controller))`. */
-  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view, WebController<X> controller) {
-    return new HttpRequestDispatcher.Route(target, new WebMVCBridge<>(view, controller));
-  }
-
-  /** Shortcut for `route(target, vc(controller))`. */
-  static <X extends WebRenderer> HttpRequestDispatcher.Route vc(String target, WebController<X> controller) {
-    return new HttpRequestDispatcher.Route(target, new WebMVCBridge<>(WebRenderer::render, controller));
-  }
-
-  /** Shortcut for `route(target, dispatch(routes))`. */
-  static HttpRequestDispatcher.Route dispatch(String target, HttpRequestDispatcher.Route... routes) {
-    return new HttpRequestDispatcher.Route(target, new HttpRequestDispatcher(routes));
-  }
-
-  /** Dispatch requests based on their path info. See (#WebMVCRequestDispatcher) */
-  @SafeVarargs
-  static <X> WebController<X> dispatch(WebMVCRequestDispatcher.Route<? extends X>... routes) {
-    return new WebMVCRequestDispatcher<>(routes);
-  }
-
-  /** Creates a dispatcher routing entry */
-  static <X> WebMVCRequestDispatcher.Route<X> route(String path, WebController<X> controller) {
-    return new WebMVCRequestDispatcher.Route<>(path, controller);
-  }
-
-  /** Shortcut for `route(target, controller(methods))`. */
-  @SafeVarargs
-  static <X> WebMVCRequestDispatcher.Route<X> controller(String path, WebMVCResource.Method<? extends X>... methods) {
-    return new WebMVCRequestDispatcher.Route<>(path, new WebMVCResource<X>(methods));
-  }
-
-  /** Shortcut for `route(target, dispatch(routes))`. */
-  @SafeVarargs
-  static <X> WebMVCRequestDispatcher.Route<X> dispatch(String path, WebMVCRequestDispatcher.Route<? extends X>... routes) {
-    return new WebMVCRequestDispatcher.Route<>(path, new WebMVCRequestDispatcher<>(routes));
-  }
-
-
-  /*/
-  #### (#HttpResource) and (#WebController) factories
-  /*/
 
   /** Shortcut for `new HttpResource(handlers)`, see (#HttpResource) */
   static HttpResource resource(HttpResource.Method... handlers) {
@@ -126,7 +60,6 @@ public interface DSL {
   static <X> WebMVCResource<X> controller(WebMVCResource.Method<? extends X>... handlers) {
     return new WebMVCResource<>(handlers);
   }
-
 
   /*/
   #### (#HttpResource.Method) factories
@@ -219,16 +152,86 @@ public interface DSL {
 
 
   /*/
-  #### (#WebView) and (#WebRenderer) factories
+  #### (#HttpRequestDispatcher) and (#WebMVCRequestDispatcher) factories
   /*/
 
-  /**
-   * creates a View that applies the renderer provided by `rendererFactory` for
-   * the model to the response.
-   */
-  static <X> WebView<X> view(Function<? super X, ? extends WebRenderer> rendererFactory) {
-    return (x, res) -> rendererFactory.apply(x).render(res);
+  /** Dispatch requests based on their path info. See (#HttpRequestDispatcher). */
+  static HttpRequestDispatcher dispatch(HttpRequestDispatcher.Route... routes) {
+    return new HttpRequestDispatcher(routes);
   }
+
+  /** Creates a dispatcher routing entry. */
+  static HttpRequestDispatcher.Route route(String target, HttpRequestHandler handler) {
+    return new HttpRequestDispatcher.Route(target, handler);
+  }
+
+  /** Shortcut for `route(target, resource(methods))`. */
+  static HttpRequestDispatcher.Route resource(String target, HttpResource.Method... methods) {
+    return new HttpRequestDispatcher.Route(target, new HttpResource(methods));
+  }
+
+  /** Shortcut for `route(target, mvc(view, controller))`. */
+  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view, WebController<X> controller) {
+    return new HttpRequestDispatcher.Route(
+        target, (request, response) -> view.render(controller.handle(request), request, response));
+  }
+
+  /** Shortcut for `route(target, dispatch(routes))`. */
+  static HttpRequestDispatcher.Route dispatch(String target, HttpRequestDispatcher.Route... routes) {
+    return new HttpRequestDispatcher.Route(target, new HttpRequestDispatcher(routes));
+  }
+
+  /** Dispatch requests based on their path info. See (#WebMVCRequestDispatcher) */
+  @SafeVarargs
+  static <X> WebMVCRequestDispatcher<X> dispatch(WebMVCRequestDispatcher.Route<? extends X>... routes) {
+    return new WebMVCRequestDispatcher<>(routes);
+  }
+
+  /** Creates a dispatcher routing entry */
+  static <X> WebMVCRequestDispatcher.Route<X> route(String path, WebController<X> controller) {
+    return new WebMVCRequestDispatcher.Route<>(path, controller);
+  }
+
+  /** Shortcut for `route(target, controller(methods))`. */
+  @SafeVarargs
+  static <X> WebMVCRequestDispatcher.Route<X> controller(String path, WebMVCResource.Method<? extends X>... methods) {
+    return new WebMVCRequestDispatcher.Route<>(path, new WebMVCResource<X>(methods));
+  }
+
+  /** Shortcut for `route(target, dispatch(routes))`. */
+  @SafeVarargs
+  static <X> WebMVCRequestDispatcher.Route<X> dispatch(String path, WebMVCRequestDispatcher.Route<? extends X>... routes) {
+    return new WebMVCRequestDispatcher.Route<>(path, new WebMVCRequestDispatcher<>(routes));
+  }
+
+
+  /*/
+  #### (#HttpRequestFilter) factories
+  /*/
+
+  /** Dummy to avoid defining empty filters. */
+  static void filter() {
+  }
+
+  /** Shortcut to specify (#HttpRequestFilter) lambda style. Returns its argument. */
+  static HttpRequestFilter filter(HttpRequestFilter filter) {
+    return filter;
+  }
+
+  /** Shortcut for `new HttpRequestFilterChain(chainedFilters)`. */
+  static HttpRequestFilter filter(HttpRequestFilter... chainedFilters) {
+    return chain(chainedFilters);
+  }
+
+  /** Alias for `filter(HttpRequestFilter...)`. */
+  static HttpRequestFilter chain(HttpRequestFilter... chainedFilters) {
+    return new HttpRequestFilterChain(asList(chainedFilters));
+  }
+
+
+  /*/
+  ### (#HttpRenderer) factories
+  /*/
 
   /** Renderer using `streamer` to stream data to the response output stream. */
   static BinaryRenderer streamWith(Streamer streamer) {
@@ -264,29 +267,5 @@ public interface DSL {
    */
   static TextRenderer write(Object toWrite) {
     return new TextRenderer(writer -> writer.write(toWrite.toString()));
-  }
-
-
-  /*/
-  #### (#HttpRequestFilter) factories
-  /*/
-
-  /** Dummy to avoid defining empty filters. */
-  static void filter() {
-  }
-
-  /** Shortcut to specify (#HttpRequestFilter) lambda style. Returns its argument. */
-  static HttpRequestFilter filter(HttpRequestFilter filter) {
-    return filter;
-  }
-
-  /** Shortcut for `new HttpRequestFilterChain(chainedFilters)`. */
-  static HttpRequestFilter filter(HttpRequestFilter... chainedFilters) {
-    return chain(chainedFilters);
-  }
-
-  /** Alias for `filter(HttpRequestFilter...)`. */
-  static HttpRequestFilter chain(HttpRequestFilter... chainedFilters) {
-    return new HttpRequestFilterChain(asList(chainedFilters));
   }
 }

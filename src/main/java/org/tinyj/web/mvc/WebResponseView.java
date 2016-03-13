@@ -15,18 +15,28 @@ limitations under the License.
 */
 package org.tinyj.web.mvc;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public abstract class WebResponseViewBase<T> implements WebView<WebResponse<T>> {
+/** Base class for (#WebView) implementations rendering (#WebResponse). */
+public abstract class WebResponseView<T> implements WebView<WebResponse<T>> {
 
+  /** Calls `renderHeader()` and `renderBody()`. */
   @Override
-  public void render(WebResponse<T> model, HttpServletResponse response) throws Exception {
-    renderHeader(model, response);
-    renderBody(model, response);
+  public void render(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    renderHeader(model, request, response);
+    renderBody(model, request, response);
   }
 
-  protected void renderHeader(WebResponse<T> model, HttpServletResponse response) throws Exception {
+  /**
+   * Default implementation sets the response status and calls
+   * `response.setHeader(...)` for each header passed to `model`.
+   *
+   * After that `response.setContentType(...)` and `response.setEncoding(...)` are
+   * called with the values passed to `model`.
+   */
+  protected void renderHeader(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
     response.setStatus(model.getStatus());
     for (Map.Entry<String, String[]> header : model.getHeaders().entrySet()) {
       String name = header.getKey();
@@ -42,5 +52,6 @@ public abstract class WebResponseViewBase<T> implements WebView<WebResponse<T>> 
     }
   }
 
-  protected abstract void renderBody(WebResponse<T> model, HttpServletResponse response) throws Exception;
+  /** Render the response body. This method is called after `renderHeader(...)`. */
+  protected abstract void renderBody(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

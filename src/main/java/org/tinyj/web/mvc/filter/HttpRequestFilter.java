@@ -34,10 +34,10 @@ interface HttpRequestFilter {
   void filter(HttpServletRequest request, HttpServletResponse response, HttpRequestHandler next) throws Exception;
 
   /**
-   * terminates a filter chain by adding (#HttpRequestHandler) `eoc` at it's end.
-   * Returns the resulting (#HttpRequestHandler).
+   * terminates the filter chain with `eoc`. Returns the resulting
+   * (#HttpRequestHandler).
    */
-  default HttpRequestHandler conclude(final HttpRequestHandler eoc) {
+  default HttpRequestHandler terminate(final HttpRequestHandler eoc) {
     return ((request, response) -> this.filter(request, response, eoc));
   }
 }

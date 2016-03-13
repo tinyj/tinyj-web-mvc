@@ -44,6 +44,7 @@ public class WebMVCResource<X> implements WebController<X> {
     setMethods(handlers);
   }
 
+  /** register method handlers */
   @SafeVarargs
   protected final void setMethods(Method<? extends X>... handlers) {
     this.methods.clear();

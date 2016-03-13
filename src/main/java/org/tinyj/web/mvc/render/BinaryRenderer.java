@@ -15,6 +15,7 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.render;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,7 @@ import java.io.OutputStream;
 
 /** Renderer for HTTP responses containing binary data. */
 public class BinaryRenderer
-    extends WebRendererBase {
+    extends HttpRenderer {
 
   protected final Streamer streamer;
 
@@ -48,7 +49,7 @@ public class BinaryRenderer
   }
 
   @Override
-  public void renderBody(HttpServletResponse response) throws Exception {
+  public void renderBody(HttpServletRequest request, HttpServletResponse response) throws Exception {
     streamer.stream(response.getOutputStream());
   }
 
