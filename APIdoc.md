@@ -383,16 +383,6 @@ _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
- `HttpResource` comes with three default handlers:
-
- - OPTIONS requests are answered with the _Allow_ header set to the list of
- supported methods.
- - if a GET handler is registered, HEAD requests are dispatched to the GET
- handler but the response body is discarded.
- - if fallback (*) is registered, requests for unregistered requests are
- answered with "405 Method not allowed!". The _Allow_ header set to the list
- of supported methods.
-
 **`HttpResource(Method[] handlers)`** _(constructor)_  
 Create new `HttpResource` dispatching requests to `handlers`. A handler
  for `*` is removed from the list an registered as fallback handler.
@@ -400,21 +390,28 @@ Create new `HttpResource` dispatching requests to `handlers`. A handler
  If `handlers` contains multiple handlers for the same method the later wins.
 
 **`setMethods(Method[] handlers)`**  
-register method handlers
+Register method handlers
 
 **`options(HttpServletRequest request, HttpServletResponse response)`**  
-default OPTIONS method handler
-
-**`head(HttpServletRequest request, HttpServletResponse response)`**  
-default HEAD method handler
+Default OPTIONS method handler
 
 **`methodNotAllowed(HttpServletRequest request, HttpServletResponse response)`**  
-default method handler fallback
+Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception)
 
 **`supportedMethods()`**  
 ⇒ *`Set<String>`* _(the supported Methods)_
-returns the list of supported methods for the default implementations of the
- OPTIONS handler and the fallback handler.
+Returns the list of supported methods.
+
+### MethodNotAllowedException
+_[(src)](src/main/java/org/tinyj/web/mvc/resource/MethodNotAllowedException.java)_  
+_extends_ (#RuntimeException)
+
+Indicates that a HTTP request could not be answered because the request
+ method is not allowed.
+
+**`getAllowed()`**  
+⇒ *`String`*  
+List of supported methods supported by the HTTP resource.
 
 ### WebMVCResource\<X>
 _[(src)](src/main/java/org/tinyj/web/mvc/resource/WebMVCResource.java)_  
@@ -425,7 +422,7 @@ Dispatches a request to a HTTP resource to a set of method handlers.
 **`WebMVCResource(Method[] handlers)`** _(constructor)_  
 Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
  for `*` is passed it's used as fallback handler. The default fallback is to
- return `null` as result model.
+ throw a [`MethodNotAllowedException`](#methodnotallowedexception).
 
  If `handlers` contains multiple handlers for the same method the later wins.
 
@@ -434,7 +431,7 @@ register method handlers
 
 **`methodNotAllowed(HttpServletRequest request)`**  
 ⇒ *`X`*  
-default method handler fallback
+Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception)
 
 ## org.tinyj.web.mvc.route
 

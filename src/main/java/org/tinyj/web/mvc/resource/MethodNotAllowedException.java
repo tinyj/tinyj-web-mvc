@@ -17,6 +17,10 @@ package org.tinyj.web.mvc.resource;
 
 import java.util.Collection;
 
+/**
+ * Indicates that a HTTP request could not be answered because the request
+ * method is not allowed.
+ */
 public class MethodNotAllowedException extends RuntimeException {
 
   private final String[] allowed;
@@ -25,6 +29,9 @@ public class MethodNotAllowedException extends RuntimeException {
     this.allowed = allowed.stream().toArray(String[]::new);
   }
 
+  /**
+   * List of supported methods supported by the HTTP resource.
+   */
   public String[] getAllowed() {
     return allowed;
   }

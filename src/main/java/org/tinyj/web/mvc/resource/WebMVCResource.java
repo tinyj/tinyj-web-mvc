@@ -36,7 +36,7 @@ public class WebMVCResource<X> implements WebController<X> {
   /**
    * Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
    * for `*` is passed it's used as fallback handler. The default fallback is to
-   * return `null` as result model.
+   * throw a (#MethodNotAllowedException).
    *
    * If `handlers` contains multiple handlers for the same method the later wins.
    */
@@ -64,7 +64,7 @@ public class WebMVCResource<X> implements WebController<X> {
         .handle(request);
   }
 
-  /** default method handler fallback */
+  /** Default method handler fallback, throws (#MethodNotAllowedException) */
   protected X methodNotAllowed(HttpServletRequest request) {
     throw new MethodNotAllowedException(supportedMethods());
   }

@@ -28,16 +28,6 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * Dispatches a request to a HTTP resource to a set of method handlers.
- *
- * `HttpResource` comes with three default handlers:
- *
- * - OPTIONS requests are answered with the _Allow_ header set to the list of
- * supported methods.
- * - if a GET handler is registered, HEAD requests are dispatched to the GET
- * handler but the response body is discarded.
- * - if fallback (*) is registered, requests for unregistered requests are
- * answered with "405 Method not allowed!". The _Allow_ header set to the list
- * of supported methods.
  */
 public class HttpResource implements HttpRequestHandler {
 
@@ -58,7 +48,7 @@ public class HttpResource implements HttpRequestHandler {
     fallback = this::methodNotAllowed;
   }
 
-  /** register method handlers */
+  /** Register method handlers */
   protected final void setMethods(Method... handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
@@ -72,19 +62,18 @@ public class HttpResource implements HttpRequestHandler {
         .handle(request, response);
   }
 
-  /** default OPTIONS method handler */
+  /** Default OPTIONS method handler */
   protected void options(HttpServletRequest request, HttpServletResponse response) {
     response.setHeader("Allow", String.join(",", supportedMethods()));
   }
 
-  /** default method handler fallback */
+  /** Default method handler fallback, throws (#MethodNotAllowedException) */
   protected void methodNotAllowed(HttpServletRequest request, HttpServletResponse response) throws Exception {
     throw new MethodNotAllowedException(supportedMethods());
   }
 
   /**
-   * returns the list of supported methods for the default implementations of the
-   * OPTIONS handler and the fallback handler.
+   * Returns the list of supported methods.
    *
    * @return the supported Methods
    */
