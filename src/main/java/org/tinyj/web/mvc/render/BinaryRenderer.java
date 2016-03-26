@@ -17,9 +17,6 @@ package org.tinyj.web.mvc.render;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /** Renderer for HTTP responses containing binary data. */
 public class BinaryRenderer
@@ -37,26 +34,12 @@ public class BinaryRenderer
   }
 
   /**
-   * when rendered everything from `input` will be copied into
-   * the response's output stream.
+   * Use the (#Streamer) passed to the constructor to stream data to
+   * `response`s output stream.
    */
-  public BinaryRenderer(InputStream input) {
-    this(input, 4096);
-  }
-
-  public BinaryRenderer(InputStream input, int bufferSize) {
-    this(output -> copy(input, output, new byte[bufferSize]));
-  }
-
   @Override
   public void renderBody(HttpServletRequest request, HttpServletResponse response) throws Exception {
     streamer.stream(response.getOutputStream());
   }
 
-  protected static void copy(InputStream input, OutputStream output, byte[] buffer) throws IOException {
-    int read;
-    while ((read = input.read(buffer)) >= 0) {
-      output.write(buffer, 0, read);
-    }
-  }
 }

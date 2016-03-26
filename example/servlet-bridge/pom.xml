@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.tinyj.example.web.mvc</groupId>
-  <artifactId>servlet-brigde</artifactId>
+  <artifactId>servlet-bridge</artifactId>
   <version>1.0</version>
 
   <packaging>war</packaging>
@@ -46,7 +46,7 @@
         <version>9.3.7.v20160115</version>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
-          <stopKey>XXX</stopKey>
+          <stopKey>XXXX</stopKey>
           <stopPort>9999</stopPort>
         </configuration>
         <executions>

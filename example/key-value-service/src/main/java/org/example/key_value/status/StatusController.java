@@ -21,8 +21,8 @@ import org.tinyj.web.mvc.resource.WebMVCResource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static org.tinyj.web.mvc.dsl.DSL.get;
-import static org.tinyj.web.mvc.dsl.DSL.put;
+import static org.tinyj.web.mvc.DSL.get;
+import static org.tinyj.web.mvc.DSL.put;
 
 public class StatusController extends WebMVCResource<Status> {
 

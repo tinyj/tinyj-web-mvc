@@ -13,17 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.tinyj.web.mvc.dsl;
+package org.tinyj.web.mvc;
 
-import org.tinyj.web.mvc.HttpRequestHandler;
-import org.tinyj.web.mvc.WebController;
-import org.tinyj.web.mvc.WebView;
-import org.tinyj.web.mvc.filter.HttpRequestFilter;
-import org.tinyj.web.mvc.filter.HttpRequestFilterChain;
-import org.tinyj.web.mvc.render.BinaryRenderer;
-import org.tinyj.web.mvc.render.Streamer;
-import org.tinyj.web.mvc.render.TextRenderer;
-import org.tinyj.web.mvc.render.Texter;
+import org.tinyj.web.mvc.render.*;
 import org.tinyj.web.mvc.resource.HttpResource;
 import org.tinyj.web.mvc.resource.WebMVCResource;
 import org.tinyj.web.mvc.route.HttpRequestDispatcher;
@@ -34,6 +26,7 @@ import java.io.Reader;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
+import static org.tinyj.web.mvc.render.Texter.textFrom;
 
 /**
  * Helper methods to define a domain specific language to simplify creating
@@ -50,15 +43,22 @@ public interface DSL {
     return ((request, response) -> view.render(controller.handle(request), request, response));
   }
 
+  /** Shortcut for `mvc(view, controller(methods)). */
+  @SafeVarargs
+  static <X> HttpRequestHandler mvc(WebView<? super X> view, WebMVCResource.Method<? extends X>... methods) {
+    final WebMVCResource<? extends X> controller = controller(methods);
+    return ((request, response) -> view.render(controller.handle(request), request, response));
+  }
+
   /** Shortcut for `new HttpResource(handlers)`, see (#HttpResource) */
   static HttpResource resource(HttpResource.Method... handlers) {
     return new HttpResource(handlers);
   }
 
-  /** Shortcut for `new WebMVCResource(handlers)`, see (#WebMVCResource) */
+  /** Shortcut for `new WebMVCResource(methods)`, see (#WebMVCResource) */
   @SafeVarargs
-  static <X> WebMVCResource<X> controller(WebMVCResource.Method<? extends X>... handlers) {
-    return new WebMVCResource<>(handlers);
+  static <X> WebMVCResource<X> controller(WebMVCResource.Method<? extends X>... methods) {
+    return new WebMVCResource<>(methods);
   }
 
   /*/
@@ -176,6 +176,14 @@ public interface DSL {
         target, (request, response) -> view.render(controller.handle(request), request, response));
   }
 
+  /** Shortcut for `route(target, mvc(view, controller(methods)))`. */
+  @SafeVarargs
+  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view, WebMVCResource.Method<? extends X>... methods) {
+    final WebMVCResource<X> controller = controller(methods);
+    return new HttpRequestDispatcher.Route(
+        target, (request, response) -> view.render(controller.handle(request), request, response));
+  }
+
   /** Shortcut for `route(target, dispatch(routes))`. */
   static HttpRequestDispatcher.Route dispatch(String target, HttpRequestDispatcher.Route... routes) {
     return new HttpRequestDispatcher.Route(target, new HttpRequestDispatcher(routes));
@@ -234,38 +242,38 @@ public interface DSL {
   /*/
 
   /** Renderer using `streamer` to stream data to the response output stream. */
-  static BinaryRenderer streamWith(Streamer streamer) {
+  static HttpRenderer streamUsing(Streamer streamer) {
     return new BinaryRenderer(streamer);
   }
 
   /** Renderer streaming data from `inputStream` to the response output stream. */
-  static BinaryRenderer streamFrom(InputStream inputStream) {
-    return new BinaryRenderer(inputStream);
+  static HttpRenderer streamFrom(InputStream inputStream) {
+    return new BinaryRenderer(Streamer.streamFrom(inputStream));
   }
 
   /** Renderer using `texter` to write to the response writer. */
-  static TextRenderer writeWith(Texter texter) {
+  static HttpRenderer writeUsing(Texter texter) {
     return new TextRenderer(texter);
   }
 
-  /** Renderer writing data from `reader` to the response writer. */
-  static TextRenderer readFrom(Reader reader) {
-    return new TextRenderer(reader);
+  /** Renderer writing text from `reader` to the response writer. */
+  static HttpRenderer writeFrom(Reader reader) {
+    return new TextRenderer(textFrom(reader));
   }
 
   /**
    * Renderer writing `toWrite` converted into a string using `stringifier` to
    * the response writer.
    */
-  static <T> TextRenderer write(T toWrite, Function<? super T, String> stringifier) {
-    return new TextRenderer(writer -> writer.write(stringifier.apply(toWrite)));
+  static <T> HttpRenderer writeFrom(T toWrite, Function<? super T, String> stringifier) {
+    return new TextRenderer(textFrom(toWrite, stringifier));
   }
 
   /**
    * Renderer writing `toWrite` converted into a string using `toWrite.toString`
    * to the response writer.
    */
-  static TextRenderer write(Object toWrite) {
-    return new TextRenderer(writer -> writer.write(toWrite.toString()));
+  static HttpRenderer writeFrom(Object toWrite) {
+    return new TextRenderer(textFrom(toWrite));
   }
 }

@@ -15,7 +15,9 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.render;
 
+import java.io.Reader;
 import java.io.Writer;
+import java.util.function.Function;
 
 /**
  * Intended to be used in a functor style. I.e. an implementation usually
@@ -30,4 +32,32 @@ public interface Texter {
    * on invocation.
    */
   void writeTo(Writer writer) throws Exception;
+
+  /** Creates a `Texter` that writes `toWrite.toString()` on invocation. */
+  static <T> Texter textFrom(T toWrite) {
+    return textFrom(toWrite, Object::toString);
+  }
+
+  /**
+   * Creates a `Texter` that, when invoked, writes `toWrite` converted to
+   * string using `stringifier`.
+   */
+  static <T> Texter textFrom(T toWrite, Function<? super T, String> stringifier) {
+    return writer -> writer.write(stringifier.apply(toWrite));
+  }
+
+  /** Creates a `Texter` that writes all text from `reader` on invocation. */
+  static Texter textFrom(Reader reader) {
+    return textFrom(reader, 4096);
+  }
+
+  static Texter textFrom(Reader reader, int bufferSize) {
+    return writer -> {
+      char[] buffer = new char[bufferSize];
+      int read;
+      while ((read = reader.read(buffer)) >= 0) {
+        writer.write(buffer, 0, read);
+      }
+    };
+  }
 }

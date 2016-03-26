@@ -44,27 +44,27 @@ REST endpoint to manage key/value pairs.
 Response will contain the URIs of all available key/value pairs. Response
 status is `200 OK` or `204 No Content` if are no key/value pairs stored.
 
-##### POST /store
+###### POST /store
 
 Creates a new key/value pair with a random key and the request body as value.
 The value is echoed in the response body, the URI for the key/value pair is
 included in the `Location` header. The response status is `201 Created`.
 
-#### Entity operations
+##### Entity operations
 
 For all operations `{key}` may be empty or contain slashes.
 
-##### GET /store/{key}
+###### GET /store/{key}
 
 Responds with the value of the given key or with `404 Not Found` if there is
 no such key.
 
-##### PUT /store/{key}
+###### PUT /store/{key}
 
 Stores the request body as value for the given key and echos the new value in
 the response. Response status code is `201 Created` if there was no value for
 the given key or `200 OK` if the value was updated.
 
-##### DELETE /store/{key}
+###### DELETE /store/{key}
 
 Deletes the given key/value pair. Response contains the deleted value.

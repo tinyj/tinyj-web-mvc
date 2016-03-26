@@ -62,9 +62,6 @@ public class HttpResource implements HttpRequestHandler {
   protected final void setMethods(Method... handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
-    if (methods.containsKey("GET")) {
-      methods.putIfAbsent("HEAD", this::head);
-    }
     HttpRequestHandler fallback = methods.remove("*");
     this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
@@ -75,6 +72,16 @@ public class HttpResource implements HttpRequestHandler {
         .handle(request, response);
   }
 
+  /** default OPTIONS method handler */
+  protected void options(HttpServletRequest request, HttpServletResponse response) {
+    response.setHeader("Allow", String.join(",", supportedMethods()));
+  }
+
+  /** default method handler fallback */
+  protected void methodNotAllowed(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    throw new MethodNotAllowedException(supportedMethods());
+  }
+
   /**
    * returns the list of supported methods for the default implementations of the
    * OPTIONS handler and the fallback handler.
@@ -83,25 +90,6 @@ public class HttpResource implements HttpRequestHandler {
    */
   protected Set<String> supportedMethods() {
     return methods.keySet();
-  }
-
-  /** default OPTIONS method handler */
-  protected void options(HttpServletRequest request, HttpServletResponse response) {
-    response.setHeader("Allow", String.join(",", supportedMethods()));
-  }
-
-  /** default HEAD method handler */
-  protected void head(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    HeadResponse headResponse = new HeadResponse(response);
-    methods.get("GET").handle(request, headResponse);
-    headResponse.close();
-  }
-
-  /** default method handler fallback */
-  protected void methodNotAllowed(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    response.setStatus(405);
-    response.setHeader("Allow", String.join(",", supportedMethods()));
-    response.getWriter().append("Method not allowed!\n").flush();
   }
 
   public static class Method {

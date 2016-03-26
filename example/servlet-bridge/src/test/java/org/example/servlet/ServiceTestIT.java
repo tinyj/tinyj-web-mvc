@@ -1,4 +1,4 @@
-package org.example.servlet;/*
+/*
 Copyright 2016 Eric Karge <e.karge@struction.de>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+package org.example.servlet;
 
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.testng.annotations.BeforeMethod;
@@ -183,7 +184,7 @@ public class ServiceTestIT {
 
     assertResponse(response, OK, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "POST");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "POST");
   }
 
   @Test
@@ -193,7 +194,7 @@ public class ServiceTestIT {
 
     assertResponse(response, METHOD_NOT_ALLOWED, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "POST");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "POST");
   }
 
 
@@ -204,7 +205,7 @@ public class ServiceTestIT {
 
     assertResponse(response, OK, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "PUT", "DELETE");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "PUT", "DELETE");
   }
 
   @Test
@@ -214,7 +215,7 @@ public class ServiceTestIT {
 
     assertResponse(response, METHOD_NOT_ALLOWED, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "PUT", "DELETE");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "PUT", "DELETE");
   }
 
   private void assertResponse(Response response, Response.Status status, String messageBody) {

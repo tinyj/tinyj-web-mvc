@@ -18,7 +18,6 @@ package org.example.servlet;
 import org.example.key_value.Dispatcher;
 import org.example.key_value.Module;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,11 +30,6 @@ public class Servlet extends HttpServlet {
 
   final Module module = new Module();
   final Dispatcher dispatcher = module.dispatcher();
-
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    super.init(config);
-  }
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

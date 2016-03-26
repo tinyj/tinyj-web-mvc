@@ -13,9 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.tinyj.web.mvc.filter;
-
-import org.tinyj.web.mvc.HttpRequestHandler;
+package org.tinyj.web.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,25 +32,34 @@ public class HttpRequestFilterChain implements HttpRequestFilter {
   }
 
   @Override
+  /**
+   * Applies all chained filters in iteration order. If any filter stops
+   * propagation, propagation is stopped for the whole chain and `next` will
+   * not be invoked.
+   */
   public void filter(HttpServletRequest request, HttpServletResponse response, HttpRequestHandler next) throws Exception {
     new Walker(chained.iterator(), next).handle(request, response);
   }
 
+  /**
+   * Helper class to iterate over a list of filters. Invokes filters in
+   * iteration order inserting itself as `next`.
+   */
   public static class Walker implements HttpRequestHandler {
     protected final Iterator<HttpRequestFilter> it;
-    protected final HttpRequestHandler endOfChain;
+    protected final HttpRequestHandler eoc;
 
-    public Walker(Iterator<HttpRequestFilter> it, HttpRequestHandler endOfChain) {
+    public Walker(Iterator<HttpRequestFilter> it, HttpRequestHandler eoc) {
       this.it = it;
-      this.endOfChain = endOfChain;
+      this.eoc = eoc;
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
       if (it.hasNext()) {
         it.next().filter(request, response, this);
-      } else if (endOfChain != null) {
-        endOfChain.handle(request, response);
+      } else if (eoc != null) {
+        eoc.handle(request, response);
       }
     }
   }

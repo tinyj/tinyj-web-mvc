@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.tinyj.web.mvc.resource;
+package org.example.key_value;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HeadResponseTest {
 
-  private HeadResponse headResponse;
+  private HeadRequestFilter.HeadResponse headResponse;
   private HttpServletResponseMock underlyingResponse;
 
   @BeforeMethod
   public void setUp() throws Exception {
     underlyingResponse = new HttpServletResponseMock();
-    headResponse = new HeadResponse(underlyingResponse);
+    headResponse = new HeadRequestFilter.HeadResponse(underlyingResponse);
   }
 
   @Test

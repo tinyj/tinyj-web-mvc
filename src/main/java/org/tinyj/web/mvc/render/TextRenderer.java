@@ -17,9 +17,6 @@ package org.tinyj.web.mvc.render;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 
 /**
  * Renderer for HTTP responses containing text. By default `UTF-8` is used as
@@ -41,26 +38,11 @@ public class TextRenderer
   }
 
   /**
-   * when rendered everything from `reader` will be copied to
-   * the response's writer.
+   * Use the (#Texter) passed to the constructor to write to `response`s
+   * writer.
    */
-  public TextRenderer(Reader reader) {
-    this(reader, 4096);
-  }
-
-  public TextRenderer(Reader reader, int bufferSize) {
-    this(writer -> copy(reader, writer, new char[bufferSize]));
-  }
-
   @Override
   public void renderBody(HttpServletRequest request, HttpServletResponse response) throws Exception {
     texter.writeTo(response.getWriter());
-  }
-
-  protected static void copy(Reader reader, Writer writer, char[] buffer) throws IOException {
-    int read;
-    while ((read = reader.read(buffer)) >= 0) {
-      writer.write(buffer, 0, read);
-    }
   }
 }

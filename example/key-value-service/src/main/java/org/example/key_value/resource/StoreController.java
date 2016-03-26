@@ -17,7 +17,7 @@ package org.example.key_value.resource;
 
 import org.example.key_value.repository.Repository;
 import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.route.WebMVCRequestDispatcher;
+import org.tinyj.web.mvc.resource.WebMVCResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -26,23 +26,21 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static org.tinyj.web.mvc.dsl.DSL.*;
+import static org.tinyj.web.mvc.DSL.*;
 
-public class StoreController extends WebMVCRequestDispatcher<WebResponse<?>> {
+public class StoreController extends WebMVCResource<WebResponse<?>> {
 
   final Repository repository;
 
   public StoreController(Repository repository) {
     this.repository = repository;
 
-    setRoutes(
-        controller("",
-            get(this::getValues),
-            post(this::postValue),
-            options(req -> WebResponse.<Void>wrap(null)
-                .withHeader("Content-Length", "0")
-                .withHeader("Allow", "GET, POST"))
-        )
+    setMethods(
+        get(this::getValues),
+        post(this::postValue),
+        options(req -> WebResponse.<Void>wrap(null)
+            .withHeader("Content-Length", "0")
+            .withHeader("Allow", String.join(",", methods.keySet())))
     );
   }
 
@@ -54,8 +52,8 @@ public class StoreController extends WebMVCRequestDispatcher<WebResponse<?>> {
         .map(x -> Arrays.stream(x).map(key -> keyPrefix + key).collect(toSet()));
 
     return WebResponse.wrap(repository.findKeys(keys, values).stream()
-        .map(k -> request.getRequestURL().append('/').append(k).toString())
-        .collect(toSet()));
+                                .map(k -> request.getRequestURL().append('/').append(k).toString())
+                                .collect(toSet()));
   }
 
   WebResponse<String> postValue(HttpServletRequest request) throws IOException {

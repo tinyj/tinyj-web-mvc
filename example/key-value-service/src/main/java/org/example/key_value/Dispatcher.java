@@ -21,29 +21,22 @@ import org.example.key_value.resource.StoreController;
 import org.example.key_value.status.StatusController;
 import org.example.key_value.status.StatusView;
 import org.tinyj.web.mvc.HttpRequestHandler;
-import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.route.WebMVCRequestDispatcher;
+import org.tinyj.web.mvc.resource.MethodNotAllowedException;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.NoSuchElementException;
 
-import static org.tinyj.web.mvc.dsl.DSL.*;
+import static org.tinyj.web.mvc.DSL.*;
 
 public class Dispatcher implements HttpRequestHandler {
 
   private HttpRequestHandler dispatcher;
 
   public Dispatcher(StatusController statusController, StoreController storeController, KeyValueController keyValueController) {
-    dispatcher = filter(this::exceptionHandler)
+    dispatcher = filter(this::exceptionHandler, new HeadRequestFilter())
         .terminate(dispatch(
             mvc("/status", new StatusView(), statusController),
             mvc("/store/*", new KeyValueView(), dispatch(
@@ -73,10 +66,10 @@ public class Dispatcher implements HttpRequestHandler {
       if (!response.isCommitted()) {
         sendErrorWithBody(response, 404, e.getMessage());
       }
-    } catch (UnsupportedOperationException e) {
+    } catch (MethodNotAllowedException e) {
       if (!response.isCommitted()) {
         try {
-          next.handle(fakeOptionsRequest(request), noBody(response));
+          response.setHeader("Allow", String.join(",", e.getAllowed()));
           response.setStatus(405);
         } catch (Exception ignored) {
           sendErrorWithBody(response, 405, e.getMessage());
@@ -89,72 +82,9 @@ public class Dispatcher implements HttpRequestHandler {
     }
   }
 
-  private HttpServletResponse noBody(HttpServletResponse response) {
-    return new HttpServletResponseWrapper(response) {
-      @Override
-      public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(new Writer() {
-          @Override
-          public void write(char[] cbuf, int off, int len) throws IOException {
-          }
-
-          @Override
-          public void flush() throws IOException {
-          }
-
-          @Override
-          public void close() throws IOException {
-          }
-        });
-      }
-
-      @Override
-      public void setBufferSize(int size) {
-      }
-
-      @Override
-      public int getBufferSize() {
-        return Integer.MAX_VALUE;
-      }
-
-      @Override
-      public ServletOutputStream getOutputStream() throws IOException {
-        return new ServletOutputStream() {
-          @Override
-          public boolean isReady() {
-            return true;
-          }
-
-          @Override
-          public void setWriteListener(WriteListener writeListener) {
-          }
-
-          @Override
-          public void write(int b) throws IOException {
-          }
-        };
-      }
-
-      @Override
-      public void flushBuffer() throws IOException {
-      }
-    };
-  }
-
-  private HttpServletRequest fakeOptionsRequest(HttpServletRequest request) {
-    return new HttpServletRequestWrapper(request) {
-
-      @Override
-      public String getMethod() {
-        return "OPTIONS";
-      }
-    };
-  }
-
   private void sendErrorWithBody(HttpServletResponse response, int status, String message) throws IOException {
     response.setStatus(status);
     response.getWriter().println(message);
     response.flushBuffer();
   }
-
 }

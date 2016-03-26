@@ -15,6 +15,7 @@ limitations under the License.
 */
 package org.tinyj.web.mvc.render;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -30,4 +31,22 @@ public interface Streamer {
    * invocation.
    */
   void stream(OutputStream output) throws Exception;
+
+  /**
+   * Creates a `Streamer` that, when invoked, streams all data from `input`.
+   */
+  static Streamer streamFrom(InputStream input) {
+    return streamFrom(input, 8192);
+  }
+
+  static Streamer streamFrom(InputStream input, int bufferSize) {
+    return output -> {
+      byte[] buffer = new byte[bufferSize];
+      int read;
+      while ((read = input.read(buffer)) >= 0) {
+        output.write(buffer, 0, read);
+      }
+    };
+  }
+
 }

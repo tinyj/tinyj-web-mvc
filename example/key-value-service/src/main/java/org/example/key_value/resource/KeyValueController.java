@@ -7,7 +7,7 @@ import org.tinyj.web.mvc.resource.WebMVCResource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static org.tinyj.web.mvc.dsl.DSL.*;
+import static org.tinyj.web.mvc.DSL.*;
 
 public class KeyValueController extends WebMVCResource<WebResponse<?>> {
 
@@ -22,7 +22,7 @@ public class KeyValueController extends WebMVCResource<WebResponse<?>> {
         put(this::putValue),
         options(req -> WebResponse.<Void>wrap(null)
             .withHeader("Content-Length", "0")
-            .withHeader("Allow", "DELETE, GET, PUT"))
+            .withHeader("Allow", String.join(",", methods.keySet())))
     );
   }
 

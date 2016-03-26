@@ -20,6 +20,7 @@ import org.tinyj.web.mvc.WebController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
@@ -65,8 +66,10 @@ public class WebMVCResource<X> implements WebController<X> {
 
   /** default method handler fallback */
   protected X methodNotAllowed(HttpServletRequest request) {
-    throw new UnsupportedOperationException();
+    throw new MethodNotAllowedException(supportedMethods());
   }
+
+  protected Set<String> supportedMethods() {return methods.keySet();}
 
   public static class Method<X> {
 

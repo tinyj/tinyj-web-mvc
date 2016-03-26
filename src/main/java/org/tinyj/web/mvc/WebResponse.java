@@ -32,7 +32,7 @@ public class WebResponse<T> {
     this.model = model;
   }
 
-  /** Create new `WebResponse` for `model`. Status code defaults to `200 OK`. */
+  /** Shortcut for `new WebResponse<>(model)`. */
   public static <T> WebResponse<T> wrap(T model) {
     return new WebResponse<>(model);
   }
