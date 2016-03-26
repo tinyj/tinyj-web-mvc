@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>hello-world</module>
     <module>key-value-service</module>
     <module>servlet-bridge</module>
   </modules>
