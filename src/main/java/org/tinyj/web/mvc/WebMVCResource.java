@@ -13,9 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.tinyj.web.mvc.resource;
-
-import org.tinyj.web.mvc.WebController;
+package org.tinyj.web.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -34,7 +32,7 @@ public class WebMVCResource<X> implements WebController<X> {
   protected WebController<? extends X> fallback;
 
   /**
-   * Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
+   * Create new `WebResource` dispatching requests to `handlers`. If a handler
    * for `*` is passed it's used as fallback handler. The default fallback is to
    * throw a (#MethodNotAllowedException).
    *
@@ -45,7 +43,7 @@ public class WebMVCResource<X> implements WebController<X> {
     setMethods(handlers);
   }
 
-  /** register method handlers */
+  /** Register method handlers. */
   @SafeVarargs
   protected final void setMethods(Method<? extends X>... handlers) {
     this.methods.clear();
@@ -64,12 +62,20 @@ public class WebMVCResource<X> implements WebController<X> {
         .handle(request);
   }
 
-  /** Default method handler fallback, throws (#MethodNotAllowedException) */
+  /** Default method handler fallback, throws (#MethodNotAllowedException). */
   protected X methodNotAllowed(HttpServletRequest request) {
     throw new MethodNotAllowedException(supportedMethods());
   }
 
-  protected Set<String> supportedMethods() {return methods.keySet();}
+  /**
+   * Returns the list of supported methods.
+   *
+   * @return the supported Methods
+   */
+  protected Set<String> supportedMethods() {
+    return methods.keySet();
+  }
+
 
   public static class Method<X> {
 

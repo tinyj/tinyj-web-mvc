@@ -13,9 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.tinyj.web.mvc.resource;
-
-import org.tinyj.web.mvc.HttpRequestHandler;
+package org.tinyj.web.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +46,7 @@ public class HttpResource implements HttpRequestHandler {
     fallback = this::methodNotAllowed;
   }
 
-  /** Register method handlers */
+  /** Register method handlers. */
   protected final void setMethods(Method... handlers) {
     methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
@@ -62,12 +60,12 @@ public class HttpResource implements HttpRequestHandler {
         .handle(request, response);
   }
 
-  /** Default OPTIONS method handler */
+  /** Default OPTIONS method handler. */
   protected void options(HttpServletRequest request, HttpServletResponse response) {
     response.setHeader("Allow", String.join(",", supportedMethods()));
   }
 
-  /** Default method handler fallback, throws (#MethodNotAllowedException) */
+  /** Default method handler fallback, throws (#MethodNotAllowedException). */
   protected void methodNotAllowed(HttpServletRequest request, HttpServletResponse response) throws Exception {
     throw new MethodNotAllowedException(supportedMethods());
   }

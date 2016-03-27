@@ -219,6 +219,42 @@ Use `response` to render a HTTP response to `request`.
  Even though it's not a strict requirement from this interface, most
  implementations will assume that prior to invocation `response` is uncommitted.
 
+### HttpResource
+_[(src)](src/main/java/org/tinyj/web/mvc/HttpResource.java)_  
+_implements_ [`HttpRequestHandler`](#httprequesthandler)
+
+Dispatches a request to a HTTP resource to a set of method handlers.
+
+**`HttpResource(HttpResource.Method[] handlers)`** _(constructor)_  
+Create new `HttpResource` dispatching requests to `handlers`. A handler
+ for `*` is removed from the list an registered as fallback handler.
+
+ If `handlers` contains multiple handlers for the same method the later wins.
+
+**`setMethods(HttpResource.Method[] handlers)`**  
+Register method handlers.
+
+**`options(HttpServletRequest request, HttpServletResponse response)`**  
+Default OPTIONS method handler.
+
+**`methodNotAllowed(HttpServletRequest request, HttpServletResponse response)`**  
+Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception).
+
+**`supportedMethods()`**  
+⇒ *`Set<String>`* _(the supported Methods)_  
+Returns the list of supported methods.
+
+### MethodNotAllowedException
+_[(src)](src/main/java/org/tinyj/web/mvc/MethodNotAllowedException.java)_  
+_extends_ (#RuntimeException)
+
+Indicates that a HTTP request could not be answered because the request
+ method is not allowed.
+
+**`getAllowed()`**  
+⇒ *`String[]`*  
+List of supported methods supported by the HTTP resource.
+
 ### WebController\<X>
 _[(src)](src/main/java/org/tinyj/web/mvc/WebController.java)_ |
 _(interface)_ |
@@ -231,6 +267,30 @@ A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interf
 **`handle(HttpServletRequest request)`**  
 ⇒ *`X`* _(the result model)_  
 
+
+### WebMVCResource\<X>
+_[(src)](src/main/java/org/tinyj/web/mvc/WebMVCResource.java)_  
+_implements_ [`WebController`](#webcontrollerx)
+
+Dispatches a request to a HTTP resource to a set of method handlers.
+
+**`WebMVCResource(WebMVCResource.Method<? extends X>[] handlers)`** _(constructor)_  
+Create new `WebResource` dispatching requests to `handlers`. If a handler
+ for `*` is passed it's used as fallback handler. The default fallback is to
+ throw a [`MethodNotAllowedException`](#methodnotallowedexception).
+
+ If `handlers` contains multiple handlers for the same method the later wins.
+
+**`setMethods(WebMVCResource.Method<? extends X>[] handlers)`**  
+Register method handlers.
+
+**`methodNotAllowed(HttpServletRequest request)`**  
+⇒ *`X`*  
+Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception).
+
+**`supportedMethods()`**  
+⇒ *`Set<String>`* _(the supported Methods)_  
+Returns the list of supported methods.
 
 ### WebResponseView\<T>
 _[(src)](src/main/java/org/tinyj/web/mvc/WebResponseView.java)_ |
@@ -374,64 +434,6 @@ Creates a `Texter` that, when invoked, writes `toWrite` converted to
 **`textFrom(Reader reader)`**  
 ⇒ *`Texter`*  
 Creates a `Texter` that writes all text from `reader` on invocation.
-
-## org.tinyj.web.mvc.resource
-
-### HttpResource
-_[(src)](src/main/java/org/tinyj/web/mvc/resource/HttpResource.java)_  
-_implements_ [`HttpRequestHandler`](#httprequesthandler)
-
-Dispatches a request to a HTTP resource to a set of method handlers.
-
-**`HttpResource(HttpResource.Method[] handlers)`** _(constructor)_  
-Create new `HttpResource` dispatching requests to `handlers`. A handler
- for `*` is removed from the list an registered as fallback handler.
-
- If `handlers` contains multiple handlers for the same method the later wins.
-
-**`setMethods(HttpResource.Method[] handlers)`**  
-Register method handlers
-
-**`options(HttpServletRequest request, HttpServletResponse response)`**  
-Default OPTIONS method handler
-
-**`methodNotAllowed(HttpServletRequest request, HttpServletResponse response)`**  
-Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception)
-
-**`supportedMethods()`**  
-⇒ *`Set<String>`* _(the supported Methods)_  
-Returns the list of supported methods.
-
-### MethodNotAllowedException
-_[(src)](src/main/java/org/tinyj/web/mvc/resource/MethodNotAllowedException.java)_  
-_extends_ (#RuntimeException)
-
-Indicates that a HTTP request could not be answered because the request
- method is not allowed.
-
-**`getAllowed()`**  
-⇒ *`String[]`*  
-List of supported methods supported by the HTTP resource.
-
-### WebMVCResource\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/resource/WebMVCResource.java)_  
-_implements_ [`WebController`](#webcontrollerx)
-
-Dispatches a request to a HTTP resource to a set of method handlers.
-
-**`WebMVCResource(WebMVCResource.Method<? extends X>[] handlers)`** _(constructor)_  
-Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
- for `*` is passed it's used as fallback handler. The default fallback is to
- throw a [`MethodNotAllowedException`](#methodnotallowedexception).
-
- If `handlers` contains multiple handlers for the same method the later wins.
-
-**`setMethods(WebMVCResource.Method<? extends X>[] handlers)`**  
-register method handlers
-
-**`methodNotAllowed(HttpServletRequest request)`**  
-⇒ *`X`*  
-Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception)
 
 ## org.tinyj.web.mvc.route
 

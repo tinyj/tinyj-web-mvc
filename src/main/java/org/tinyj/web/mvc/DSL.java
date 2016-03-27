@@ -16,8 +16,6 @@ limitations under the License.
 package org.tinyj.web.mvc;
 
 import org.tinyj.web.mvc.render.*;
-import org.tinyj.web.mvc.resource.HttpResource;
-import org.tinyj.web.mvc.resource.WebMVCResource;
 import org.tinyj.web.mvc.route.HttpRequestDispatcher;
 import org.tinyj.web.mvc.route.WebMVCRequestDispatcher;
 
