@@ -34,11 +34,11 @@ public class HttpResource implements HttpRequestHandler {
 
   /**
    * Create new `HttpResource` dispatching requests to `handlers`. A handler
-   * for `*` is removed from the list an registered as fallback handler.
+   * for `*` is used as fallback handler.
    *
-   * If `handlers` contains multiple handlers for the same method the later wins.
+   * If `handlers` contains multiple handlers for the same method the last one is used.
    */
-  public HttpResource(Method... handlers) {
+  public HttpResource(MethodHandler... handlers) {
     setMethods(handlers);
   }
 
@@ -47,8 +47,8 @@ public class HttpResource implements HttpRequestHandler {
   }
 
   /** Register method handlers. */
-  protected final void setMethods(Method... handlers) {
-    methods.putAll(stream(handlers).collect(toMap(Method::method, Method::handler)));
+  protected void setMethods(MethodHandler... handlers) {
+    methods.putAll(stream(handlers).collect(toMap(MethodHandler::method, MethodHandler::handler)));
     methods.putIfAbsent("OPTIONS", this::options);
     HttpRequestHandler fallback = methods.remove("*");
     this.fallback = fallback != null ? fallback : this::methodNotAllowed;
@@ -75,16 +75,16 @@ public class HttpResource implements HttpRequestHandler {
    *
    * @return the supported Methods
    */
-  protected Set<String> supportedMethods() {
+  public Set<String> supportedMethods() {
     return methods.keySet();
   }
 
-  public static class Method {
+  public static class MethodHandler {
 
     public final String method;
     public final HttpRequestHandler handler;
 
-    public Method(String method, HttpRequestHandler handler) {
+    public MethodHandler(String method, HttpRequestHandler handler) {
       this.method = method;
       this.handler = handler;
     }

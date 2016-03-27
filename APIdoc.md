@@ -11,81 +11,81 @@ Helper methods to define a domain specific language to simplify creating
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `new MVCBridge(view, controller)`.
 
-**`mvc(WebView<? super X> view, WebResource.Method<? extends X>[] methods)`**  
+**`mvc(WebView<? super X> view, WebResource.MethodHandler<? extends X>[] methodHandlers)`**  
 ⇒ *`HttpRequestHandler`*  
-Shortcut for `mvc(view, controller(methods)).
+Shortcut for `mvc(view, controller(methodHandlers)).
 
-**`resource(HttpResource.Method[] handlers)`**  
+**`resource(HttpResource.MethodHandler[] methodHandlers)`**  
 ⇒ *`HttpResource`*  
-Shortcut for `new HttpResource(handlers)`, see [`HttpResource`](#httpresource)
+Shortcut for `new HttpResource(methodHandlers)`, see [`HttpResource`](#httpresource)
 
-**`controller(WebResource.Method<? extends X>[] methods)`**  
+**`controller(WebResource.MethodHandler<? extends X>[] methodHandlers)`**  
 ⇒ *`WebResource<X>`*  
-Shortcut for `new WebResource(methods)`, see [`WebResource`](#webresourcex)
+Shortcut for `new WebController(methodHandlers)`, see [`WebController`](#webcontrollerx)
 
 **`method(String method, HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method(method, handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler(method, handler)`.
 
 **`delete(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("DELETE", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("DELETE", handler)`.
 
 **`get(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("GET", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("GET", handler)`.
 
 **`head(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("HEAD", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("HEAD", handler)`.
 
 **`options(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("OPTIONS", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("OPTIONS", handler)`.
 
 **`patch(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("PATCH", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("PATCH", handler)`.
 
 **`post(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("POST", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("POST", handler)`.
 
 **`put(HttpRequestHandler handler)`**  
-⇒ *`HttpResource.Method`*  
-Shortcut for `new HttpResource.Method("PUT", handler)`.
+⇒ *`HttpResource.MethodHandler`*  
+Shortcut for `new HttpResource.MethodHandler("PUT", handler)`.
 
 **`method(String method, WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method(method, handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler(method, handler)`.
 
 **`delete(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("DELETE", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("DELETE", handler)`.
 
 **`get(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("GET", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("GET", handler)`.
 
 **`head(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("HEAD", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("HEAD", handler)`.
 
 **`options(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("OPTIONS", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("OPTIONS", handler)`.
 
 **`patch(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("PATCH", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("PATCH", handler)`.
 
 **`post(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("POST", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("POST", handler)`.
 
 **`put(WebController<X> handler)`**  
-⇒ *`WebResource.Method<X>`*  
-Shortcut for `new WebResource.Method("PUT", handler)`.
+⇒ *`WebResource.MethodHandler<X>`*  
+Shortcut for `new WebController.MethodHandler("PUT", handler)`.
 
 **`dispatch(HttpRequestDispatcher.Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher`*  
@@ -95,17 +95,17 @@ Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httpr
 ⇒ *`HttpRequestDispatcher.Route`*  
 Creates a dispatcher routing entry.
 
-**`resource(String target, HttpResource.Method[] methods)`**  
+**`resource(String target, HttpResource.MethodHandler[] methodHandlers)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, resource(methods))`.
+Shortcut for `route(target, resource(methodHandlers))`.
 
 **`mvc(String target, WebView<? super X> view, WebController<X> controller)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, mvc(view, controller))`.
 
-**`mvc(String target, WebView<? super X> view, WebResource.Method<? extends X>[] methods)`**  
+**`mvc(String target, WebView<? super X> view, WebResource.MethodHandler<? extends X>[] methodHandlers)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
-Shortcut for `route(target, mvc(view, controller(methods)))`.
+Shortcut for `route(target, mvc(view, controller(methodHandlers)))`.
 
 **`dispatch(String target, HttpRequestDispatcher.Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
@@ -119,9 +119,9 @@ Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#web
 ⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Creates a dispatcher routing entry
 
-**`controller(String path, WebResource.Method<? extends X>[] methods)`**  
+**`controller(String path, WebResource.MethodHandler<? extends X>[] methodHandlers)`**  
 ⇒ *`WebMVCRequestDispatcher.Route<X>`*  
-Shortcut for `route(target, controller(methods))`.
+Shortcut for `route(target, controller(methodHandlers))`.
 
 **`dispatch(String path, WebMVCRequestDispatcher.Route<? extends X>[] routes)`**  
 ⇒ *`WebMVCRequestDispatcher.Route<X>`*  
@@ -225,13 +225,13 @@ _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
-**`HttpResource(HttpResource.Method[] handlers)`** _(constructor)_  
+**`HttpResource(HttpResource.MethodHandler[] handlers)`** _(constructor)_  
 Create new `HttpResource` dispatching requests to `handlers`. A handler
- for `*` is removed from the list an registered as fallback handler.
+ for `*` is used as fallback handler.
 
- If `handlers` contains multiple handlers for the same method the later wins.
+ If `handlers` contains multiple handlers for the same method the last one is used.
 
-**`setMethods(HttpResource.Method[] handlers)`**  
+**`setMethods(HttpResource.MethodHandler[] handlers)`**  
 Register method handlers.
 
 **`options(HttpServletRequest request, HttpServletResponse response)`**  
@@ -274,14 +274,13 @@ _implements_ [`WebController`](#webcontrollerx)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
-**`WebResource(WebResource.Method<? extends X>[] handlers)`** _(constructor)_  
-Create new `WebResource` dispatching requests to `handlers`. If a handler
- for `*` is passed it's used as fallback handler. The default fallback is to
- throw a [`MethodNotAllowedException`](#methodnotallowedexception).
+**`WebResource(WebResource.MethodHandler<? extends X>[] handlers)`** _(constructor)_  
+Create new `WebResourceController` dispatching requests to `handlers`. A handler
+ for `*` is used as fallback handler.
 
- If `handlers` contains multiple handlers for the same method the later wins.
+ If `handlers` contains multiple handlers for the same method the last one is used.
 
-**`setMethods(WebResource.Method<? extends X>[] handlers)`**  
+**`setMethods(WebResource.MethodHandler<? extends X>[] handlers)`**  
 Register method handlers.
 
 **`methodNotAllowed(HttpServletRequest request)`**  

@@ -32,28 +32,27 @@ public class WebResource<X> implements WebController<X> {
   protected WebController<? extends X> fallback;
 
   /**
-   * Create new `WebResource` dispatching requests to `handlers`. If a handler
-   * for `*` is passed it's used as fallback handler. The default fallback is to
-   * throw a (#MethodNotAllowedException).
+   * Create new `WebResourceController` dispatching requests to `handlers`. A handler
+   * for `*` is used as fallback handler.
    *
-   * If `handlers` contains multiple handlers for the same method the later wins.
+   * If `handlers` contains multiple handlers for the same method the last one is used.
    */
   @SafeVarargs
-  public WebResource(final Method<? extends X>... handlers) {
+  public WebResource(final MethodHandler<? extends X>... handlers) {
     setMethods(handlers);
-  }
-
-  /** Register method handlers. */
-  @SafeVarargs
-  protected final void setMethods(Method<? extends X>... handlers) {
-    this.methods.clear();
-    methods.putAll(stream(handlers).collect(toMap(Method::method, Method::controller)));
-    WebController<? extends X> fallback = methods.remove("*");
-    this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
 
   protected WebResource() {
     fallback = this::methodNotAllowed;
+  }
+
+  /** Register method handlers. */
+  @SafeVarargs
+  protected final void setMethods(MethodHandler<? extends X>... handlers) {
+    this.methods.clear();
+    methods.putAll(stream(handlers).collect(toMap(MethodHandler::method, MethodHandler::handler)));
+    WebController<? extends X> fallback = methods.remove("*");
+    this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
 
   @Override
@@ -76,23 +75,22 @@ public class WebResource<X> implements WebController<X> {
     return methods.keySet();
   }
 
-
-  public static class Method<X> {
+  public static class MethodHandler<X> {
 
     public final String method;
-    public final WebController<X> controller;
+    public final WebController<X> handler;
 
-    public Method(String method, WebController<X> controller) {
+    public MethodHandler(String method, WebController<X> handler) {
       this.method = method;
-      this.controller = controller;
+      this.handler = handler;
     }
 
     public String method() {
       return method;
     }
 
-    public WebController<X> controller() {
-      return controller;
+    public WebController<X> handler() {
+      return handler;
     }
   }
 }

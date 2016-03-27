@@ -41,111 +41,112 @@ public interface DSL {
     return ((request, response) -> view.render(controller.handle(request), request, response));
   }
 
-  /** Shortcut for `mvc(view, controller(methods)). */
+  /** Shortcut for `mvc(view, controller(methodHandlers)). */
   @SafeVarargs
-  static <X> HttpRequestHandler mvc(WebView<? super X> view, WebResource.Method<? extends X>... methods) {
-    final WebResource<? extends X> controller = controller(methods);
+  static <X> HttpRequestHandler mvc(WebView<? super X> view,
+                                    WebResource.MethodHandler<? extends X>... methodHandlers) {
+    final WebResource<? extends X> controller = controller(methodHandlers);
     return ((request, response) -> view.render(controller.handle(request), request, response));
   }
 
-  /** Shortcut for `new HttpResource(handlers)`, see (#HttpResource) */
-  static HttpResource resource(HttpResource.Method... handlers) {
-    return new HttpResource(handlers);
+  /** Shortcut for `new HttpResource(methodHandlers)`, see (#HttpResource) */
+  static HttpResource resource(HttpResource.MethodHandler... methodHandlers) {
+    return new HttpResource(methodHandlers);
   }
 
-  /** Shortcut for `new WebResource(methods)`, see (#WebResource) */
+  /** Shortcut for `new WebController(methodHandlers)`, see (#WebController) */
   @SafeVarargs
-  static <X> WebResource<X> controller(WebResource.Method<? extends X>... methods) {
-    return new WebResource<>(methods);
+  static <X> WebResource<X> controller(WebResource.MethodHandler<? extends X>... methodHandlers) {
+    return new WebResource<>(methodHandlers);
   }
 
   /*/
-  #### (#HttpResource.Method) factories
+  #### (#HttpResource.MethodHandler) factories
   /*/
 
-  /** Shortcut for `new HttpResource.Method(method, handler)`. */
-  static HttpResource.Method method(String method, HttpRequestHandler handler) {
-    return new HttpResource.Method(method, handler);
+  /** Shortcut for `new HttpResource.MethodHandler(method, handler)`. */
+  static HttpResource.MethodHandler method(String method, HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler(method, handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("DELETE", handler)`. */
-  static HttpResource.Method delete(HttpRequestHandler handler) {
-    return new HttpResource.Method("DELETE", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("DELETE", handler)`. */
+  static HttpResource.MethodHandler delete(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("DELETE", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("GET", handler)`. */
-  static HttpResource.Method get(HttpRequestHandler handler) {
-    return new HttpResource.Method("GET", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("GET", handler)`. */
+  static HttpResource.MethodHandler get(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("GET", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("HEAD", handler)`. */
-  static HttpResource.Method head(HttpRequestHandler handler) {
-    return new HttpResource.Method("HEAD", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("HEAD", handler)`. */
+  static HttpResource.MethodHandler head(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("HEAD", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("OPTIONS", handler)`. */
-  static HttpResource.Method options(HttpRequestHandler handler) {
-    return new HttpResource.Method("OPTIONS", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("OPTIONS", handler)`. */
+  static HttpResource.MethodHandler options(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("OPTIONS", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("PATCH", handler)`. */
-  static HttpResource.Method patch(HttpRequestHandler handler) {
-    return new HttpResource.Method("PATCH", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("PATCH", handler)`. */
+  static HttpResource.MethodHandler patch(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("PATCH", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("POST", handler)`. */
-  static HttpResource.Method post(HttpRequestHandler handler) {
-    return new HttpResource.Method("POST", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("POST", handler)`. */
+  static HttpResource.MethodHandler post(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("POST", handler);
   }
 
-  /** Shortcut for `new HttpResource.Method("PUT", handler)`. */
-  static HttpResource.Method put(HttpRequestHandler handler) {
-    return new HttpResource.Method("PUT", handler);
+  /** Shortcut for `new HttpResource.MethodHandler("PUT", handler)`. */
+  static HttpResource.MethodHandler put(HttpRequestHandler handler) {
+    return new HttpResource.MethodHandler("PUT", handler);
   }
 
 
   /*/
-  #### (#WebResource.Method) factories
+  #### (#WebController.MethodHandler) factories
   /*/
 
-  /** Shortcut for `new WebResource.Method(method, handler)`. */
-  static <X> WebResource.Method<X> method(String method, WebController<X> handler) {
-    return new WebResource.Method<>(method, handler);
+  /** Shortcut for `new WebController.MethodHandler(method, handler)`. */
+  static <X> WebResource.MethodHandler<X> method(String method, WebController<X> handler) {
+    return new WebResource.MethodHandler<>(method, handler);
   }
 
-  /** Shortcut for `new WebResource.Method("DELETE", handler)`. */
-  static <X> WebResource.Method<X> delete(WebController<X> handler) {
-    return new WebResource.Method<>("DELETE", handler);
+  /** Shortcut for `new WebController.MethodHandler("DELETE", handler)`. */
+  static <X> WebResource.MethodHandler<X> delete(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("DELETE", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("GET", handler)`. */
-  static <X> WebResource.Method<X> get(WebController<X> handler) {
-    return new WebResource.Method<>("GET", handler);
+  /** Shortcut for `new WebController.MethodHandler("GET", handler)`. */
+  static <X> WebResource.MethodHandler<X> get(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("GET", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("HEAD", handler)`. */
-  static <X> WebResource.Method<X> head(WebController<X> handler) {
-    return new WebResource.Method<>("HEAD", handler);
+  /** Shortcut for `new WebController.MethodHandler("HEAD", handler)`. */
+  static <X> WebResource.MethodHandler<X> head(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("HEAD", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("OPTIONS", handler)`. */
-  static <X> WebResource.Method<X> options(WebController<X> handler) {
-    return new WebResource.Method<>("OPTIONS", handler);
+  /** Shortcut for `new WebController.MethodHandler("OPTIONS", handler)`. */
+  static <X> WebResource.MethodHandler<X> options(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("OPTIONS", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("PATCH", handler)`. */
-  static <X> WebResource.Method<X> patch(WebController<X> handler) {
-    return new WebResource.Method<>("PATCH", handler);
+  /** Shortcut for `new WebController.MethodHandler("PATCH", handler)`. */
+  static <X> WebResource.MethodHandler<X> patch(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("PATCH", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("POST", handler)`. */
-  static <X> WebResource.Method<X> post(WebController<X> handler) {
-    return new WebResource.Method<>("POST", handler);
+  /** Shortcut for `new WebController.MethodHandler("POST", handler)`. */
+  static <X> WebResource.MethodHandler<X> post(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("POST", handler);
   }
 
-  /** Shortcut for `new WebResource.Method("PUT", handler)`. */
-  static <X> WebResource.Method<X> put(WebController<X> handler) {
-    return new WebResource.Method<>("PUT", handler);
+  /** Shortcut for `new WebController.MethodHandler("PUT", handler)`. */
+  static <X> WebResource.MethodHandler<X> put(WebController<X> handler) {
+    return new WebResource.MethodHandler<>("PUT", handler);
   }
 
 
@@ -163,9 +164,9 @@ public interface DSL {
     return new HttpRequestDispatcher.Route(target, handler);
   }
 
-  /** Shortcut for `route(target, resource(methods))`. */
-  static HttpRequestDispatcher.Route resource(String target, HttpResource.Method... methods) {
-    return new HttpRequestDispatcher.Route(target, new HttpResource(methods));
+  /** Shortcut for `route(target, resource(methodHandlers))`. */
+  static HttpRequestDispatcher.Route resource(String target, HttpResource.MethodHandler... methodHandlers) {
+    return new HttpRequestDispatcher.Route(target, new HttpResource(methodHandlers));
   }
 
   /** Shortcut for `route(target, mvc(view, controller))`. */
@@ -174,10 +175,11 @@ public interface DSL {
         target, (request, response) -> view.render(controller.handle(request), request, response));
   }
 
-  /** Shortcut for `route(target, mvc(view, controller(methods)))`. */
+  /** Shortcut for `route(target, mvc(view, controller(methodHandlers)))`. */
   @SafeVarargs
-  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view, WebResource.Method<? extends X>... methods) {
-    final WebResource<X> controller = controller(methods);
+  static <X> HttpRequestDispatcher.Route mvc(String target, WebView<? super X> view,
+                                             WebResource.MethodHandler<? extends X>... methodHandlers) {
+    final WebResource<X> controller = controller(methodHandlers);
     return new HttpRequestDispatcher.Route(
         target, (request, response) -> view.render(controller.handle(request), request, response));
   }
@@ -198,10 +200,11 @@ public interface DSL {
     return new WebMVCRequestDispatcher.Route<>(path, controller);
   }
 
-  /** Shortcut for `route(target, controller(methods))`. */
+  /** Shortcut for `route(target, controller(methodHandlers))`. */
   @SafeVarargs
-  static <X> WebMVCRequestDispatcher.Route<X> controller(String path, WebResource.Method<? extends X>... methods) {
-    return new WebMVCRequestDispatcher.Route<>(path, new WebResource<X>(methods));
+  static <X> WebMVCRequestDispatcher.Route<X> controller(String path,
+                                                         WebResource.MethodHandler<? extends X>... methodHandlers) {
+    return new WebMVCRequestDispatcher.Route<>(path, new WebResource<X>(methodHandlers));
   }
 
   /** Shortcut for `route(target, dispatch(routes))`. */
