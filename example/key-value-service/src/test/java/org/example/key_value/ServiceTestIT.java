@@ -15,12 +15,20 @@ limitations under the License.
 */
 package org.example.key_value;
 
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.glassfish.jersey.client.JerseyWebTarget;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.io.IOException;
 import java.net.URI;
 
 import static javax.ws.rs.client.Entity.text;
@@ -31,12 +39,39 @@ import static org.glassfish.jersey.client.JerseyClientBuilder.createClient;
 
 public class ServiceTestIT {
 
-  public static final String BASE_URL = "http://localhost:8080/service";
   private JerseyWebTarget webTarget;
 
-  @BeforeMethod
+  private Server server;
+  private String baseUri;
+
+  @BeforeClass
   public void setUp() throws Exception {
-    webTarget = createClient().target(BASE_URL);
+    server = new Server() {
+      private Servlet servlet = new Servlet();
+
+      @Override
+      public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        try {
+          servlet.service(request, response);
+          baseRequest.setHandled(true);
+        } catch (RuntimeException | IOException | ServletException e) {
+          throw e;
+        } catch (Exception e) {
+          throw new ServletException(e);
+        }
+      }
+    };
+    ServerConnector connector = new ServerConnector(server);
+    connector.setHost("127.0.0.1");
+    server.addConnector(connector);
+    server.start();
+    baseUri = "http://127.0.0.1:" + connector.getLocalPort();
+    webTarget = createClient().target(baseUri);
+  }
+
+  @AfterClass(alwaysRun = true)
+  public void tearDown() throws Exception {
+    server.stop();
   }
 
   @Test
@@ -76,7 +111,7 @@ public class ServiceTestIT {
     // then
     assertThat(response.getStatus()).isEqualTo(CREATED.getStatusCode());
     assertThat(response.getLocation().toASCIIString())
-        .startsWith(UriBuilder.fromUri(BASE_URL).path("store/").build().toASCIIString());
+        .startsWith(UriBuilder.fromUri(baseUri).path("store/").build().toASCIIString());
     assertThat(response.readEntity(String.class)).isEqualTo("posted value");
 
     // given
@@ -131,7 +166,7 @@ public class ServiceTestIT {
     // then
     assertResponse(response, CREATED, "putted value");
     assertThat(response.getLocation().toASCIIString())
-        .isEqualTo(BASE_URL + "/store/key");
+        .isEqualTo(baseUri + "/store/key");
 
     // when
     response = webTarget.path("store").path("key").request().get();
@@ -156,7 +191,7 @@ public class ServiceTestIT {
 
     // then
     assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
-    assertThat(response.readEntity(String.class).split("\r?\n")).containsOnly(BASE_URL + "/store/key");
+    assertThat(response.readEntity(String.class).split("\r?\n")).containsOnly(baseUri + "/store/key");
 
     // when
     response = webTarget.path("store").path("key").request().delete();
@@ -184,7 +219,7 @@ public class ServiceTestIT {
 
     assertResponse(response, OK, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "POST");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "HEAD", "OPTIONS", "POST");
   }
 
   @Test
@@ -194,7 +229,7 @@ public class ServiceTestIT {
 
     assertResponse(response, METHOD_NOT_ALLOWED, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "POST");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "HEAD", "OPTIONS", "POST");
   }
 
 
@@ -205,7 +240,7 @@ public class ServiceTestIT {
 
     assertResponse(response, OK, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "PUT", "DELETE");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "HEAD", "OPTIONS", "PUT", "DELETE");
   }
 
   @Test
@@ -215,7 +250,7 @@ public class ServiceTestIT {
 
     assertResponse(response, METHOD_NOT_ALLOWED, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
-    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "OPTIONS", "PUT", "DELETE");
+    assertThat(response.getHeaderString("Allow").split(" *, *")).containsOnly("GET", "HEAD", "OPTIONS", "PUT", "DELETE");
   }
 
   private void assertResponse(Response response, Response.Status status, String messageBody) {

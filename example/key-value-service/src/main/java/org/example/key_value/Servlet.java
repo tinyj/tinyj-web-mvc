@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.DSL.*;
 
-@WebServlet("/service/*")
+@WebServlet("/*")
 public class Servlet extends HttpServletAdapter {
 
   private final static Module module = new Module();
@@ -67,7 +67,8 @@ public class Servlet extends HttpServletAdapter {
         try {
           response.reset();
           response.setHeader("Allow", String.join(",", Stream.concat(
-              Stream.of(e.getAllowed()), Stream.of("OPTIONS")).collect(toSet())));
+              Stream.of(e.getAllowed()).map(m -> m.equals("GET") ? "GET,HEAD" : m),
+              Stream.of("OPTIONS")).collect(toSet())));
           if (request.getMethod().toLowerCase().equals("options")) {
             response.setStatus(200);
           } else

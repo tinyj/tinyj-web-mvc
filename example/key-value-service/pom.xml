@@ -44,28 +44,7 @@
         <version>9.3.7.v20160115</version>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
-          <stopKey>XXXX</stopKey>
-          <stopPort>9999</stopPort>
         </configuration>
-        <executions>
-          <execution>
-            <id>start-jetty</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-jetty</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -105,6 +84,12 @@
       <groupId>org.tinyj.test</groupId>
       <artifactId>tinyj-servlet-test</artifactId>
       <version>0.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.3.7.v20160115</version>
       <scope>test</scope>
     </dependency>
     <dependency>
