@@ -7,20 +7,20 @@ _(interface)_
 Helper methods to define a domain specific language to simplify creating
  Request filter chains, routing tables and handlers.
 
-**`mvc(WebView view, WebController controller)`**  
+**`mvc(WebView<? super X> view, WebController<? extends X> controller)`**  
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `new MVCBridge(view, controller)`.
 
-**`mvc(WebView view, Method[] methods)`**  
+**`mvc(WebView<? super X> view, WebMVCResource.Method<? extends X>[] methods)`**  
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `mvc(view, controller(methods)).
 
-**`resource(Method[] handlers)`**  
+**`resource(HttpResource.Method[] handlers)`**  
 ⇒ *`HttpResource`*  
 Shortcut for `new HttpResource(handlers)`, see [`HttpResource`](#httpresource)
 
-**`controller(Method[] methods)`**  
-⇒ *`WebMVCResource`*  
+**`controller(WebMVCResource.Method<? extends X>[] methods)`**  
+⇒ *`WebMVCResource<X>`*  
 Shortcut for `new WebMVCResource(methods)`, see [`WebMVCResource`](#webmvcresourcex)
 
 **`method(String method, HttpRequestHandler handler)`**  
@@ -55,39 +55,39 @@ Shortcut for `new HttpResource.Method("POST", handler)`.
 ⇒ *`HttpResource.Method`*  
 Shortcut for `new HttpResource.Method("PUT", handler)`.
 
-**`method(String method, WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`method(String method, WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method(method, handler)`.
 
-**`delete(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`delete(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("DELETE", handler)`.
 
-**`get(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`get(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("GET", handler)`.
 
-**`head(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`head(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("HEAD", handler)`.
 
-**`options(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`options(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("OPTIONS", handler)`.
 
-**`patch(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`patch(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("PATCH", handler)`.
 
-**`post(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`post(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("POST", handler)`.
 
-**`put(WebController handler)`**  
-⇒ *`WebMVCResource.Method`*  
+**`put(WebController<X> handler)`**  
+⇒ *`WebMVCResource.Method<X>`*  
 Shortcut for `new WebMVCResource.Method("PUT", handler)`.
 
-**`dispatch(Route[] routes)`**  
+**`dispatch(HttpRequestDispatcher.Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher`*  
 Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httprequestdispatcher).
 
@@ -95,36 +95,36 @@ Dispatch requests based on their path info. See [`HttpRequestDispatcher`](#httpr
 ⇒ *`HttpRequestDispatcher.Route`*  
 Creates a dispatcher routing entry.
 
-**`resource(String target, Method[] methods)`**  
+**`resource(String target, HttpResource.Method[] methods)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, resource(methods))`.
 
-**`mvc(String target, WebView view, WebController controller)`**  
+**`mvc(String target, WebView<? super X> view, WebController<X> controller)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, mvc(view, controller))`.
 
-**`mvc(String target, WebView view, Method[] methods)`**  
+**`mvc(String target, WebView<? super X> view, WebMVCResource.Method<? extends X>[] methods)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, mvc(view, controller(methods)))`.
 
-**`dispatch(String target, Route[] routes)`**  
+**`dispatch(String target, HttpRequestDispatcher.Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, dispatch(routes))`.
 
-**`dispatch(Route[] routes)`**  
-⇒ *`WebMVCRequestDispatcher`*  
+**`dispatch(WebMVCRequestDispatcher.Route<? extends X>[] routes)`**  
+⇒ *`WebMVCRequestDispatcher<X>`*  
 Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#webmvcrequestdispatcherx)
 
-**`route(String path, WebController controller)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
+**`route(String path, WebController<X> controller)`**  
+⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Creates a dispatcher routing entry
 
-**`controller(String path, Method[] methods)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
+**`controller(String path, WebMVCResource.Method<? extends X>[] methods)`**  
+⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Shortcut for `route(target, controller(methods))`.
 
-**`dispatch(String path, Route[] routes)`**  
-⇒ *`WebMVCRequestDispatcher.Route`*  
+**`dispatch(String path, WebMVCRequestDispatcher.Route<? extends X>[] routes)`**  
+⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Shortcut for `route(target, dispatch(routes))`.
 
 **`filter()`**  
@@ -158,7 +158,7 @@ Renderer using `texter` to write to the response writer.
 ⇒ *`HttpRenderer`*  
 Renderer writing text from `reader` to the response writer.
 
-**`writeFrom(T toWrite, Function stringifier)`**  
+**`writeFrom(T toWrite, Function<? super T, String> stringifier)`**  
 ⇒ *`HttpRenderer`*  
 Renderer writing `toWrite` converted into a string using `stringifier` to
  the response writer.
@@ -191,7 +191,7 @@ _implements_ [`HttpRequestFilter`](#httprequestfilter)
 
 Composite [`HttpRequestFilter`](#httprequestfilter).
 
-**`HttpRequestFilterChain(List chained)`** _(constructor)_  
+**`HttpRequestFilterChain(List<HttpRequestFilter> chained)`** _(constructor)_  
 request will be propagated through `chained` in iteration order.
 
 ### HttpRequestFilterChain.Walker
@@ -239,17 +239,17 @@ _implements_ [`WebView`](#webviewx)
 
 Base class for [`WebView`](#webviewx) implementations rendering [`WebResponse`](#webresponset).
 
-**`render(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+**`render(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response)`**  
 Calls `renderHeader()` and `renderBody()`.
 
-**`renderHeader(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+**`renderHeader(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response)`**  
 Default implementation sets the response status and calls
  `response.setHeader(...)` for each header passed to `model`.
 
  After that `response.setContentType(...)` and `response.setEncoding(...)` are
  called with the values passed to `model`.
 
-**`renderBody(WebResponse model, HttpServletRequest request, HttpServletResponse response)`**  
+**`renderBody(WebResponse<T> model, HttpServletRequest request, HttpServletResponse response)`**  
 Render the response body. This method is called after `renderHeader(...)`.
 
 ### WebView\<X>
@@ -366,7 +366,7 @@ Write data to `writer`. `writer` should be ready to be written to.
 ⇒ *`Texter`*  
 Creates a `Texter` that writes `toWrite.toString()` on invocation.
 
-**`textFrom(T toWrite, Function stringifier)`**  
+**`textFrom(T toWrite, Function<? super T, String> stringifier)`**  
 ⇒ *`Texter`*  
 Creates a `Texter` that, when invoked, writes `toWrite` converted to
  string using `stringifier`.
@@ -383,13 +383,13 @@ _implements_ [`HttpRequestHandler`](#httprequesthandler)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
-**`HttpResource(Method[] handlers)`** _(constructor)_  
+**`HttpResource(HttpResource.Method[] handlers)`** _(constructor)_  
 Create new `HttpResource` dispatching requests to `handlers`. A handler
  for `*` is removed from the list an registered as fallback handler.
 
  If `handlers` contains multiple handlers for the same method the later wins.
 
-**`setMethods(Method[] handlers)`**  
+**`setMethods(HttpResource.Method[] handlers)`**  
 Register method handlers
 
 **`options(HttpServletRequest request, HttpServletResponse response)`**  
@@ -399,7 +399,7 @@ Default OPTIONS method handler
 Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception)
 
 **`supportedMethods()`**  
-⇒ *`Set<String>`* _(the supported Methods)_
+⇒ *`Set<String>`* _(the supported Methods)_  
 Returns the list of supported methods.
 
 ### MethodNotAllowedException
@@ -410,7 +410,7 @@ Indicates that a HTTP request could not be answered because the request
  method is not allowed.
 
 **`getAllowed()`**  
-⇒ *`String`*  
+⇒ *`String[]`*  
 List of supported methods supported by the HTTP resource.
 
 ### WebMVCResource\<X>
@@ -419,14 +419,14 @@ _implements_ [`WebController`](#webcontrollerx)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
-**`WebMVCResource(Method[] handlers)`** _(constructor)_  
+**`WebMVCResource(WebMVCResource.Method<? extends X>[] handlers)`** _(constructor)_  
 Create new `WebMVCResource` dispatching requests to `handlers`. If a handler
  for `*` is passed it's used as fallback handler. The default fallback is to
  throw a [`MethodNotAllowedException`](#methodnotallowedexception).
 
  If `handlers` contains multiple handlers for the same method the later wins.
 
-**`setMethods(Method[] handlers)`**  
+**`setMethods(WebMVCResource.Method<? extends X>[] handlers)`**  
 register method handlers
 
 **`methodNotAllowed(HttpServletRequest request)`**  
