@@ -13,10 +13,10 @@ You can find the API documentation [here](APIdoc.md).
 ## Examples
 
 - [hello-world](example/hello-world) The obligatory _Hello world!_ example.
+- [hello-world-extended](example/hello-world-extended) A few variations on the
+  _Hello world!_ theme.
 - [key-value-service](example/key-value-service) implementation of a simple
   REST conform key value store.
-- [servlet-bridge](example/servlet-bridge) running the key-value-service
-  example inside a servlet container.
 
 ## License
 
