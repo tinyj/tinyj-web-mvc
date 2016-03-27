@@ -275,7 +275,7 @@ _implements_ [`WebController`](#webcontrollerx)
 Dispatches a request to a HTTP resource to a set of method handlers.
 
 **`WebResource(WebResource.MethodHandler<? extends X>[] handlers)`** _(constructor)_  
-Create new `WebResourceController` dispatching requests to `handlers`. A handler
+Create new `WebResource` dispatching requests to `handlers`. A handler
  for `*` is used as fallback handler.
 
  If `handlers` contains multiple handlers for the same method the last one is used.

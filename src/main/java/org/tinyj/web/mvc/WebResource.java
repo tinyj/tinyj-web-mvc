@@ -32,7 +32,7 @@ public class WebResource<X> implements WebController<X> {
   protected WebController<? extends X> fallback;
 
   /**
-   * Create new `WebResourceController` dispatching requests to `handlers`. A handler
+   * Create new `WebResource` dispatching requests to `handlers`. A handler
    * for `*` is used as fallback handler.
    *
    * If `handlers` contains multiple handlers for the same method the last one is used.
