@@ -19,10 +19,7 @@ public class KeyValueController extends WebResource<WebResponse<?>> {
     setMethods(
         delete(this::deleteValue),
         get(this::getValue),
-        put(this::putValue),
-        options(req -> WebResponse.<Void>wrap(null)
-            .withHeader("Content-Length", "0")
-            .withHeader("Allow", String.join(",", methods.keySet())))
+        put(this::putValue)
     );
   }
 

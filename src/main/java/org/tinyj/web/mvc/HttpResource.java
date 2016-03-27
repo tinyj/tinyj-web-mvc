@@ -49,7 +49,6 @@ public class HttpResource implements HttpRequestHandler {
   /** Register method handlers. */
   protected void setMethods(MethodHandler... handlers) {
     methods.putAll(stream(handlers).collect(toMap(MethodHandler::method, MethodHandler::handler)));
-    methods.putIfAbsent("OPTIONS", this::options);
     HttpRequestHandler fallback = methods.remove("*");
     this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
@@ -58,11 +57,6 @@ public class HttpResource implements HttpRequestHandler {
   public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
     methods.getOrDefault(request.getMethod(), fallback)
         .handle(request, response);
-  }
-
-  /** Default OPTIONS method handler. */
-  protected void options(HttpServletRequest request, HttpServletResponse response) {
-    response.setHeader("Allow", String.join(",", supportedMethods()));
   }
 
   /** Default method handler fallback, throws (#MethodNotAllowedException). */

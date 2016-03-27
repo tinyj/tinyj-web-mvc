@@ -234,9 +234,6 @@ Create new `HttpResource` dispatching requests to `handlers`. A handler
 **`setMethods(HttpResource.MethodHandler[] handlers)`**  
 Register method handlers.
 
-**`options(HttpServletRequest request, HttpServletResponse response)`**  
-Default OPTIONS method handler.
-
 **`methodNotAllowed(HttpServletRequest request, HttpServletResponse response)`**  
 Default method handler fallback, throws [`MethodNotAllowedException`](#methodnotallowedexception).
 

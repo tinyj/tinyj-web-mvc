@@ -26,7 +26,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static org.tinyj.web.mvc.DSL.*;
+import static org.tinyj.web.mvc.DSL.get;
+import static org.tinyj.web.mvc.DSL.post;
 
 public class StoreController extends WebResource<WebResponse<?>> {
 
@@ -37,10 +38,7 @@ public class StoreController extends WebResource<WebResponse<?>> {
 
     setMethods(
         get(this::getValues),
-        post(this::postValue),
-        options(req -> WebResponse.<Void>wrap(null)
-            .withHeader("Content-Length", "0")
-            .withHeader("Allow", String.join(",", methods.keySet())))
+        post(this::postValue)
     );
   }
 

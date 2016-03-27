@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.DSL.*;
 
 public class Dispatcher implements HttpRequestHandler {
@@ -69,8 +71,13 @@ public class Dispatcher implements HttpRequestHandler {
     } catch (MethodNotAllowedException e) {
       if (!response.isCommitted()) {
         try {
-          response.setHeader("Allow", String.join(",", e.getAllowed()));
-          response.setStatus(405);
+          response.reset();
+          response.setHeader("Allow", String.join(",", Stream.concat(
+              Stream.of(e.getAllowed()), Stream.of("OPTIONS")).collect(toSet())));
+          if (request.getMethod().toLowerCase().equals("options")) {
+            response.setStatus(200);
+          } else
+            response.setStatus(405);
         } catch (Exception ignored) {
           sendErrorWithBody(response, 405, e.getMessage());
         }
