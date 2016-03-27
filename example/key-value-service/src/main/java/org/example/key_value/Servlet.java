@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.DSL.*;
 
@@ -38,10 +39,7 @@ public class Servlet extends HttpServletAdapter {
 
   public Servlet() {
     super((Servlet self) ->
-              filter(
-                  self::exceptionHandler,
-                  new HeadRequestFilter()
-              ).terminate(
+              filter(self::exceptionHandler).terminate(
                   dispatch(
                       mvc("/status", new StatusView(), module.statusController()),
                       mvc("/store/*", new KeyValueView(), dispatch(
@@ -66,6 +64,14 @@ public class Servlet extends HttpServletAdapter {
       if (!response.isCommitted()) {
         try {
           response.reset();
+          if (request.getMethod().equals("HEAD") && asList(e.getAllowed()).contains("GET")) {
+            try {
+              HeadResponse headResponse = new HeadResponse(response);
+              service(new HeadRequest(request), headResponse);
+              headResponse.close();
+              return;
+            } catch (Exception ignored) {}
+          }
           response.setHeader("Allow", String.join(",", Stream.concat(
               Stream.of(e.getAllowed()).map(m -> m.equals("GET") ? "GET,HEAD" : m),
               Stream.of("OPTIONS")).collect(toSet())));

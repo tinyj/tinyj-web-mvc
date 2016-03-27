@@ -23,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HeadResponseTest {
 
-  private HeadRequestFilter.HeadResponse headResponse;
+  private HeadResponse headResponse;
   private HttpServletResponseMock underlyingResponse;
 
   @BeforeMethod
   public void setUp() throws Exception {
     underlyingResponse = new HttpServletResponseMock();
-    headResponse = new HeadRequestFilter.HeadResponse(underlyingResponse);
+    headResponse = new HeadResponse(underlyingResponse);
   }
 
   @Test
