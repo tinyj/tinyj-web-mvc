@@ -16,8 +16,8 @@ limitations under the License.
 package org.example.key_value.resource;
 
 import org.example.key_value.repository.Repository;
+import org.tinyj.web.mvc.WebResource;
 import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.resource.WebMVCResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.DSL.*;
 
-public class StoreController extends WebMVCResource<WebResponse<?>> {
+public class StoreController extends WebResource<WebResponse<?>> {
 
   final Repository repository;
 

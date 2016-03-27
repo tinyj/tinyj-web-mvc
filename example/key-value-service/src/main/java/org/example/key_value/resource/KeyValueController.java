@@ -1,15 +1,15 @@
 package org.example.key_value.resource;
 
 import org.example.key_value.repository.Repository;
+import org.tinyj.web.mvc.WebResource;
 import org.tinyj.web.mvc.WebResponse;
-import org.tinyj.web.mvc.resource.WebMVCResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.tinyj.web.mvc.DSL.*;
 
-public class KeyValueController extends WebMVCResource<WebResponse<?>> {
+public class KeyValueController extends WebResource<WebResponse<?>> {
 
   final Repository repository;
 

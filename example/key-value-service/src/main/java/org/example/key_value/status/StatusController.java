@@ -16,7 +16,7 @@ limitations under the License.
 package org.example.key_value.status;
 
 import org.example.key_value.repository.Repository;
-import org.tinyj.web.mvc.resource.WebMVCResource;
+import org.tinyj.web.mvc.WebResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.io.IOException;
 import static org.tinyj.web.mvc.DSL.get;
 import static org.tinyj.web.mvc.DSL.put;
 
-public class StatusController extends WebMVCResource<Status> {
+public class StatusController extends WebResource<Status> {
 
   final Repository repository;
   final DeploymentStatusHolder deploymentStatusHolder;

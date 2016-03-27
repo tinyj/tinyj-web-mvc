@@ -21,7 +21,7 @@ import org.example.key_value.resource.StoreController;
 import org.example.key_value.status.StatusController;
 import org.example.key_value.status.StatusView;
 import org.tinyj.web.mvc.HttpRequestHandler;
-import org.tinyj.web.mvc.resource.MethodNotAllowedException;
+import org.tinyj.web.mvc.MethodNotAllowedException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

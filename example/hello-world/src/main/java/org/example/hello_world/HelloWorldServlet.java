@@ -15,8 +15,8 @@ limitations under the License.
 */
 package org.example.hello_world;
 
+import org.tinyj.web.mvc.WebResource;
 import org.tinyj.web.mvc.WebView;
-import org.tinyj.web.mvc.resource.WebMVCResource;
 import org.tinyj.web.mvc.route.HttpRequestDispatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +57,7 @@ public class HelloWorldServlet extends HttpRequestDispatcher {
     return queryString != null && !queryString.isEmpty() ? URLDecoder.decode(queryString, "UTF-8") : fallback;
   }
 
-  private class EchoQueryController extends WebMVCResource<String> {
+  private class EchoQueryController extends WebResource<String> {
     public EchoQueryController() {
       super(
           get(req -> decodeOrUse(req.getQueryString(), "")),
