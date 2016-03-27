@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Dispatches a request to a HTTP resource to a set of method handlers.
  */
-public class WebMVCResource<X> implements WebController<X> {
+public class WebResource<X> implements WebController<X> {
 
   protected final Map<String, WebController<? extends X>> methods = new HashMap<>();
   protected WebController<? extends X> fallback;
@@ -39,7 +39,7 @@ public class WebMVCResource<X> implements WebController<X> {
    * If `handlers` contains multiple handlers for the same method the later wins.
    */
   @SafeVarargs
-  public WebMVCResource(final Method<? extends X>... handlers) {
+  public WebResource(final Method<? extends X>... handlers) {
     setMethods(handlers);
   }
 
@@ -52,7 +52,7 @@ public class WebMVCResource<X> implements WebController<X> {
     this.fallback = fallback != null ? fallback : this::methodNotAllowed;
   }
 
-  protected WebMVCResource() {
+  protected WebResource() {
     fallback = this::methodNotAllowed;
   }
 

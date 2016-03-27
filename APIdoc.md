@@ -11,7 +11,7 @@ Helper methods to define a domain specific language to simplify creating
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `new MVCBridge(view, controller)`.
 
-**`mvc(WebView<? super X> view, WebMVCResource.Method<? extends X>[] methods)`**  
+**`mvc(WebView<? super X> view, WebResource.Method<? extends X>[] methods)`**  
 ⇒ *`HttpRequestHandler`*  
 Shortcut for `mvc(view, controller(methods)).
 
@@ -19,9 +19,9 @@ Shortcut for `mvc(view, controller(methods)).
 ⇒ *`HttpResource`*  
 Shortcut for `new HttpResource(handlers)`, see [`HttpResource`](#httpresource)
 
-**`controller(WebMVCResource.Method<? extends X>[] methods)`**  
-⇒ *`WebMVCResource<X>`*  
-Shortcut for `new WebMVCResource(methods)`, see [`WebMVCResource`](#webmvcresourcex)
+**`controller(WebResource.Method<? extends X>[] methods)`**  
+⇒ *`WebResource<X>`*  
+Shortcut for `new WebResource(methods)`, see [`WebResource`](#webresourcex)
 
 **`method(String method, HttpRequestHandler handler)`**  
 ⇒ *`HttpResource.Method`*  
@@ -56,36 +56,36 @@ Shortcut for `new HttpResource.Method("POST", handler)`.
 Shortcut for `new HttpResource.Method("PUT", handler)`.
 
 **`method(String method, WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method(method, handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method(method, handler)`.
 
 **`delete(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("DELETE", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("DELETE", handler)`.
 
 **`get(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("GET", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("GET", handler)`.
 
 **`head(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("HEAD", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("HEAD", handler)`.
 
 **`options(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("OPTIONS", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("OPTIONS", handler)`.
 
 **`patch(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("PATCH", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("PATCH", handler)`.
 
 **`post(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("POST", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("POST", handler)`.
 
 **`put(WebController<X> handler)`**  
-⇒ *`WebMVCResource.Method<X>`*  
-Shortcut for `new WebMVCResource.Method("PUT", handler)`.
+⇒ *`WebResource.Method<X>`*  
+Shortcut for `new WebResource.Method("PUT", handler)`.
 
 **`dispatch(HttpRequestDispatcher.Route[] routes)`**  
 ⇒ *`HttpRequestDispatcher`*  
@@ -103,7 +103,7 @@ Shortcut for `route(target, resource(methods))`.
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, mvc(view, controller))`.
 
-**`mvc(String target, WebView<? super X> view, WebMVCResource.Method<? extends X>[] methods)`**  
+**`mvc(String target, WebView<? super X> view, WebResource.Method<? extends X>[] methods)`**  
 ⇒ *`HttpRequestDispatcher.Route`*  
 Shortcut for `route(target, mvc(view, controller(methods)))`.
 
@@ -119,7 +119,7 @@ Dispatch requests based on their path info. See [`WebMVCRequestDispatcher`](#web
 ⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Creates a dispatcher routing entry
 
-**`controller(String path, WebMVCResource.Method<? extends X>[] methods)`**  
+**`controller(String path, WebResource.Method<? extends X>[] methods)`**  
 ⇒ *`WebMVCRequestDispatcher.Route<X>`*  
 Shortcut for `route(target, controller(methods))`.
 
@@ -268,20 +268,20 @@ A conceptual variation of the [`HttpRequestHandler`](#httprequesthandler) interf
 ⇒ *`X`* _(the result model)_  
 
 
-### WebMVCResource\<X>
-_[(src)](src/main/java/org/tinyj/web/mvc/WebMVCResource.java)_  
+### WebResource\<X>
+_[(src)](src/main/java/org/tinyj/web/mvc/WebResource.java)_  
 _implements_ [`WebController`](#webcontrollerx)
 
 Dispatches a request to a HTTP resource to a set of method handlers.
 
-**`WebMVCResource(WebMVCResource.Method<? extends X>[] handlers)`** _(constructor)_  
+**`WebResource(WebResource.Method<? extends X>[] handlers)`** _(constructor)_  
 Create new `WebResource` dispatching requests to `handlers`. If a handler
  for `*` is passed it's used as fallback handler. The default fallback is to
  throw a [`MethodNotAllowedException`](#methodnotallowedexception).
 
  If `handlers` contains multiple handlers for the same method the later wins.
 
-**`setMethods(WebMVCResource.Method<? extends X>[] handlers)`**  
+**`setMethods(WebResource.Method<? extends X>[] handlers)`**  
 Register method handlers.
 
 **`methodNotAllowed(HttpServletRequest request)`**  
