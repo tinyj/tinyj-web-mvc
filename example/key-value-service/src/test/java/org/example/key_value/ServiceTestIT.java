@@ -95,12 +95,32 @@ public class ServiceTestIT {
   }
 
   @Test(dependsOnMethods = "get_status__put_status")
+  public void head_status() throws Exception {
+    // setup
+    Response response;
+
+    // when
+    response = webTarget.path("status").request().head();
+
+    // then
+    assertThat(response.getStatus()).isEqualTo(OK.getStatusCode());
+    assertThat(response.getHeaderString("Content-Length")).isEqualTo("51");
+    assertThat(response.readEntity(String.class)).isEmpty();
+  }
+
+  @Test(dependsOnMethods = "get_status__put_status")
   public void posting_values() throws Exception {
     // setup
     Response response;
 
     // when
     response = webTarget.path("store").request().get();
+
+    // then
+    assertEmptyResponse(response);
+
+    // when
+    response = webTarget.path("store").request().head();
 
     // then
     assertEmptyResponse(response);
@@ -131,6 +151,13 @@ public class ServiceTestIT {
     assertThat(response.readEntity(String.class).split("\r?\n")).contains(uri.toASCIIString());
 
     // when
+    response = webTarget.path("store").request().head();
+
+    // then
+    assertResponse(response, OK, "");
+    assertThat(response.getHeaderString("Content-Length")).isEqualTo(Integer.toString(uri.toASCIIString().length() + 2));
+
+    // when
     response = createClient().target(uri).request().delete();
 
     //then
@@ -155,13 +182,19 @@ public class ServiceTestIT {
     assertEmptyResponse(response);
 
     // when
-    response = webTarget.path("store").path("key").request().get();
+    response = webTarget.path("store/key").request().get();
 
     // then
     assertResponse(response, NOT_FOUND, "Not found: key\n");
 
     // when
-    response = webTarget.path("store").path("key").request().put(text("putted value"));
+    response = webTarget.path("store/key").request().head();
+
+    // then
+    assertResponse(response, NOT_FOUND, "");
+
+    // when
+    response = webTarget.path("store/key").request().put(text("putted value"));
 
     // then
     assertResponse(response, CREATED, "putted value");
@@ -169,22 +202,37 @@ public class ServiceTestIT {
         .isEqualTo(baseUri + "/store/key");
 
     // when
-    response = webTarget.path("store").path("key").request().get();
+    response = webTarget.path("store/key").request().get();
 
     // then
     assertResponse(response, OK, "putted value");
 
     // when
-    response = webTarget.path("store").path("key").request().put(text("different putted value"));
+    response = webTarget.path("store/key").request().head();
+
+    // then
+    assertResponse(response, OK, "");
+    assertThat(response.getHeaderString("Content-Length")).isEqualTo("12");
+
+    // when
+    response = webTarget.path("store/key").request().put(text("different putted value"));
 
     // then
     assertResponse(response, OK, "different putted value");
 
     // when
-    response = webTarget.path("store").path("key").request().get();
+    response = webTarget.path("store/key").request().get();
 
     // then
     assertResponse(response, OK, "different putted value");
+
+
+    // when
+    response = webTarget.path("store/key").request().head();
+
+    // then
+    assertResponse(response, OK, "");
+    assertThat(response.getHeaderString("Content-Length")).isEqualTo("22");
 
     // when
     response = webTarget.path("store").request().get();
@@ -194,7 +242,7 @@ public class ServiceTestIT {
     assertThat(response.readEntity(String.class).split("\r?\n")).containsOnly(baseUri + "/store/key");
 
     // when
-    response = webTarget.path("store").path("key").request().delete();
+    response = webTarget.path("store/key").request().delete();
 
     // then
     assertResponse(response, OK, "different putted value");
@@ -206,7 +254,7 @@ public class ServiceTestIT {
     assertEmptyResponse(response);
 
     // when
-    response = webTarget.path("store").path("key").request().get();
+    response = webTarget.path("store/key").request().get();
 
     // then
     assertResponse(response, NOT_FOUND, "Not found: key\n");
@@ -236,7 +284,7 @@ public class ServiceTestIT {
   @Test
   public void options_for_key() throws Exception {
 
-    final Response response = webTarget.path("store").path("key").request().options();
+    final Response response = webTarget.path("store/key").request().options();
 
     assertResponse(response, OK, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
@@ -246,7 +294,7 @@ public class ServiceTestIT {
   @Test
   public void method_not_allowed_response_for_key() throws Exception {
 
-    final Response response = webTarget.path("store").path("key").request().post(text(""));
+    final Response response = webTarget.path("store/key").request().post(text(""));
 
     assertResponse(response, METHOD_NOT_ALLOWED, "");
     assertThat(response.getHeaderString("Content-Length")).contains("0");
