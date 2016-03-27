@@ -33,7 +33,7 @@ import java.io.IOException;
 import static javax.ws.rs.client.Entity.text;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HelloWorldServletTestIT {
+public class HelloWorldExtendedTestIT {
 
   private Server server;
   private String baseUri;
@@ -41,7 +41,7 @@ public class HelloWorldServletTestIT {
   @BeforeClass
   public void setUp() throws Exception {
     server = new Server() {
-      private HelloWorldServlet servlet = new HelloWorldServlet();
+      private HelloWorldExtended servlet = new HelloWorldExtended();
 
       @Override
       public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

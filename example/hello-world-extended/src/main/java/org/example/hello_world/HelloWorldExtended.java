@@ -29,9 +29,9 @@ import java.net.URLDecoder;
 import static org.tinyj.web.mvc.DSL.*;
 import static org.tinyj.web.mvc.render.Texter.textFrom;
 
-public class HelloWorldServlet extends HttpServletAdapter {
+public class HelloWorldExtended extends HttpServletAdapter {
 
-  public HelloWorldServlet() {
+  public HelloWorldExtended() {
     super(dispatch(
         resource("/", get(writeUsing(textFrom("Hello world!\n")))),
 
