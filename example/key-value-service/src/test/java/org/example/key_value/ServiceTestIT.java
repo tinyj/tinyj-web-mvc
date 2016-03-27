@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.example.servlet;
+package org.example.key_value;
 
 import org.glassfish.jersey.client.JerseyWebTarget;
 import org.testng.annotations.BeforeMethod;

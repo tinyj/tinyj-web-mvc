@@ -12,7 +12,7 @@
 
   <modules>
     <module>hello-world</module>
+    <module>hello-world-extended</module>
     <module>key-value-service</module>
-    <module>servlet-bridge</module>
   </modules>
 </project>

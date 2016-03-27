@@ -13,26 +13,38 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.example.servlet;
-
-import org.example.key_value.Dispatcher;
-import org.example.key_value.Module;
+package org.tinyj.web.mvc;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.function.Function;
 
-@WebServlet("/service/*")
-public class Servlet extends HttpServlet {
+public class HttpServletAdapter extends HttpServlet {
 
-  final Module module = new Module();
-  final Dispatcher dispatcher = module.dispatcher();
+  protected final HttpRequestHandler requestHandler;
+
+  protected <This extends HttpServletAdapter>
+  HttpServletAdapter(Function<This, HttpRequestHandler> requestHandlerProvider) {
+    this.requestHandler = requestHandlerProvider.apply((This) this);
+  }
+
+  protected HttpServletAdapter(HttpRequestHandler requestHandler) {
+    this.requestHandler = requestHandler;
+  }
 
   @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    dispatcher.handle(req, resp);
+  public void service(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    try {
+      requestHandler.handle(request, response);
+
+    } catch (ServletException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new ServletException(e);
+    }
   }
 }

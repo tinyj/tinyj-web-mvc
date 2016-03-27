@@ -15,15 +15,13 @@ limitations under the License.
 */
 package org.example.key_value;
 
-import org.example.key_value.resource.KeyValueController;
 import org.example.key_value.resource.KeyValueView;
-import org.example.key_value.resource.StoreController;
-import org.example.key_value.status.StatusController;
 import org.example.key_value.status.StatusView;
 import org.tinyj.web.mvc.HttpRequestHandler;
+import org.tinyj.web.mvc.HttpServletAdapter;
 import org.tinyj.web.mvc.MethodNotAllowedException;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,31 +31,27 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toSet;
 import static org.tinyj.web.mvc.DSL.*;
 
-public class Dispatcher implements HttpRequestHandler {
+@WebServlet("/service/*")
+public class Servlet extends HttpServletAdapter {
 
-  private HttpRequestHandler dispatcher;
+  private final static Module module = new Module();
 
-  public Dispatcher(StatusController statusController, StoreController storeController, KeyValueController keyValueController) {
-    dispatcher = filter(this::exceptionHandler, new HeadRequestFilter())
-        .terminate(dispatch(
-            mvc("/status", new StatusView(), statusController),
-            mvc("/store/*", new KeyValueView(), dispatch(
-                route("", storeController),
-                route("/*", keyValueController)
-            ))
-        ));
+  public Servlet() {
+    super((Servlet self) ->
+              filter(
+                  self::exceptionHandler,
+                  new HeadRequestFilter()
+              ).terminate(
+                  dispatch(
+                      mvc("/status", new StatusView(), module.statusController()),
+                      mvc("/store/*", new KeyValueView(), dispatch(
+                          route("", module.storeController()),
+                          route("/*", module.keyValueController())
+                      ))
+                  )));
   }
 
-  @Override
-  public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    try {
-      dispatcher.handle(request, response);
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
-  }
-
-  public void exceptionHandler(HttpServletRequest request, HttpServletResponse response, HttpRequestHandler next) throws Exception {
+  public void exceptionHandler(HttpServletRequest request, HttpServletResponse response, HttpRequestHandler next) throws IOException {
     try {
       next.handle(request, response);
     } catch (IllegalArgumentException e) {

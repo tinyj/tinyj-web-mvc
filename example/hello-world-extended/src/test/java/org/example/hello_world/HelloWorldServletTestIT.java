@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
+import static javax.ws.rs.client.Entity.text;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HelloWorldServletTestIT {
@@ -72,6 +73,54 @@ public class HelloWorldServletTestIT {
     Response response = request("/").get();
 
     assertThat(response.readEntity(String.class)).isEqualTo("Hello world!\n");
+  }
+
+  @Test
+  public void get_hello() throws Exception {
+
+    Response response = request("/hello?John").get();
+
+    assertThat(response.readEntity(String.class)).isEqualTo("Hello John!\n");
+  }
+
+  @Test
+  public void put_hello() throws Exception {
+
+    Response response = request("/hello").put(text("John"));
+
+    assertThat(response.readEntity(String.class)).isEqualTo("Hello John!\n");
+  }
+
+  @Test
+  public void get_good_morning() throws Exception {
+
+    Response response = request("/good-morning?John").get();
+
+    assertThat(response.readEntity(String.class)).isEqualTo("Good morning John!\n");
+  }
+
+  @Test
+  public void put_good_morning() throws Exception {
+
+    Response response = request("/good-morning").put(text("John"));
+
+    assertThat(response.readEntity(String.class)).isEqualTo("Good morning John!\n");
+  }
+
+  @Test
+  public void get_echo() throws Exception {
+
+    Response response = request("/echo?...").get();
+
+    assertThat(response.readEntity(String.class)).isEqualTo("...");
+  }
+
+  @Test
+  public void put_echo() throws Exception {
+
+    Response response = request("/echo").put(text("..."));
+
+    assertThat(response.readEntity(String.class)).isEqualTo("...");
   }
 
   JerseyInvocation.Builder request(String requestPathAndQuery) {

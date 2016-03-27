@@ -39,10 +39,6 @@ public class Module {
 
   // prototypes
 
-  public Dispatcher dispatcher() {
-    return new Dispatcher(statusController(), storeController(), keyValueController());
-  }
-
   public StatusController statusController() {
     return new StatusController(repository(), deploymentStatusHolder());
   }
