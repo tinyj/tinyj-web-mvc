@@ -6,7 +6,7 @@
 
   <groupId>org.tinyj.web</groupId>
   <artifactId>tinyj-web-mvc</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>TinyJ WebMVC</name>
   <description>A container agnostic web model-view-controller framework.</description>
