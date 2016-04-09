@@ -20,7 +20,7 @@ import org.tinyj.web.mvc.HttpServletAdapter;
 import javax.servlet.annotation.WebServlet;
 
 import static org.tinyj.web.mvc.DSL.*;
-import static org.tinyj.web.mvc.render.Texter.textFrom;
+import static org.tinyj.web.mvc.render.Texter.text;
 
 @WebServlet("/")
 public class HelloWorldServlet extends HttpServletAdapter {
@@ -28,6 +28,6 @@ public class HelloWorldServlet extends HttpServletAdapter {
   public HelloWorldServlet() {
     super(dispatch(
         resource("/", get(
-            writeUsing(textFrom("Hello world!\n"))))));
+            writeResponseUsing(text("Hello world!\n"))))));
   }
 }

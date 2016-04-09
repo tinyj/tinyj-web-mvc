@@ -2,8 +2,15 @@
 # TinyJ WebMVC
 [![build status](https://travis-ci.org/tinyj/tinyj-web-mvc.svg?branch=master)](https://travis-ci.org/tinyj/tinyj-web-mvc)
 
-A container agnostic web model-view-controller framework.
+A container agnostic web model-view-controller framework. Request routing is
+inspired by [spark](http://sparkjava.com/). Key differences are
 
+ - TinyJ WebMVC does not take care of running an actual web server.
+ - TinyJ WebMVC sticks to the servlet-api for request and response parameters.
+ - TinyJ WebMVC does not take care of rendering the response.
+
+This allows for easy integration with existing libraries and servlet containers.
+Another key aspect of TinyJ WebMVC is to facilitate streaming data.  
 
 ## API documentation
 

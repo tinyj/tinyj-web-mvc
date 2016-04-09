@@ -19,12 +19,7 @@ import org.tinyj.web.mvc.render.*;
 import org.tinyj.web.mvc.route.HttpRequestDispatcher;
 import org.tinyj.web.mvc.route.WebMVCRequestDispatcher;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.function.Function;
-
 import static java.util.Arrays.asList;
-import static org.tinyj.web.mvc.render.Texter.textFrom;
 
 /**
  * Helper methods to define a domain specific language to simplify creating
@@ -36,7 +31,10 @@ public interface DSL {
   #### (#HttpRequestHandler) factories
   /*/
 
-  /** Shortcut for `new MVCBridge(view, controller)`. */
+  /**
+   * Returns a (#HttpRequestHandler) using `view` to render the model returned
+   * by `controller`.
+   */
   static <X> HttpRequestHandler mvc(WebView<? super X> view, WebController<? extends X> controller) {
     return ((request, response) -> view.render(controller.handle(request), request, response));
   }
@@ -227,9 +225,12 @@ public interface DSL {
     return filter;
   }
 
-  /** Shortcut for `new HttpRequestFilterChain(chainedFilters)`. */
+  /**
+   * Shortcut for `new HttpRequestFilterChain(chainedFilters)`,
+   * see (#HttpRequestFilterChain).
+   */
   static HttpRequestFilter filter(HttpRequestFilter... chainedFilters) {
-    return chain(chainedFilters);
+    return new HttpRequestFilterChain(asList(chainedFilters));
   }
 
   /** Alias for `filter(HttpRequestFilter...)`. */
@@ -242,39 +243,19 @@ public interface DSL {
   ### (#HttpRenderer) factories
   /*/
 
-  /** Renderer using `streamer` to stream data to the response output stream. */
-  static HttpRenderer streamUsing(Streamer streamer) {
+  /**
+   * Renderer using `streamer` to stream data to the response output stream,
+   * see (#BinaryRenderer).
+   */
+  static HttpRenderer streamResponseUsing(Streamer streamer) {
     return new BinaryRenderer(streamer);
   }
 
-  /** Renderer streaming data from `inputStream` to the response output stream. */
-  static HttpRenderer streamFrom(InputStream inputStream) {
-    return new BinaryRenderer(Streamer.streamFrom(inputStream));
-  }
-
-  /** Renderer using `texter` to write to the response writer. */
-  static HttpRenderer writeUsing(Texter texter) {
+  /**
+   * Renderer using `texter` to write to the response writer,
+   * see (#TextRenderer).
+   */
+  static HttpRenderer writeResponseUsing(Texter texter) {
     return new TextRenderer(texter);
-  }
-
-  /** Renderer writing text from `reader` to the response writer. */
-  static HttpRenderer writeFrom(Reader reader) {
-    return new TextRenderer(textFrom(reader));
-  }
-
-  /**
-   * Renderer writing `toWrite` converted into a string using `stringifier` to
-   * the response writer.
-   */
-  static <T> HttpRenderer writeFrom(T toWrite, Function<? super T, String> stringifier) {
-    return new TextRenderer(textFrom(toWrite, stringifier));
-  }
-
-  /**
-   * Renderer writing `toWrite` converted into a string using `toWrite.toString`
-   * to the response writer.
-   */
-  static HttpRenderer writeFrom(Object toWrite) {
-    return new TextRenderer(textFrom(toWrite));
   }
 }

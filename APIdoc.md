@@ -9,7 +9,8 @@ Helper methods to define a domain specific language to simplify creating
 
 **`mvc(WebView<? super X> view, WebController<? extends X> controller)`**  
 ⇒ *`HttpRequestHandler`*  
-Shortcut for `new MVCBridge(view, controller)`.
+Returns a [`HttpRequestHandler`](#httprequesthandler) using `view` to render the model returned
+ by `controller`.
 
 **`mvc(WebView<? super X> view, WebResource.MethodHandler<? extends X>[] methodHandlers)`**  
 ⇒ *`HttpRequestHandler`*  
@@ -136,37 +137,22 @@ Shortcut to specify [`HttpRequestFilter`](#httprequestfilter) lambda style. Retu
 
 **`filter(HttpRequestFilter[] chainedFilters)`**  
 ⇒ *`HttpRequestFilter`*  
-Shortcut for `new HttpRequestFilterChain(chainedFilters)`.
+Shortcut for `new HttpRequestFilterChain(chainedFilters)`,
+ see [`HttpRequestFilterChain`](#httprequestfilterchain).
 
 **`chain(HttpRequestFilter[] chainedFilters)`**  
 ⇒ *`HttpRequestFilter`*  
 Alias for `filter(HttpRequestFilter...)`.
 
-**`streamUsing(Streamer streamer)`**  
+**`streamResponseUsing(Streamer streamer)`**  
 ⇒ *`HttpRenderer`*  
-Renderer using `streamer` to stream data to the response output stream.
+Renderer using `streamer` to stream data to the response output stream,
+ see [`BinaryRenderer`](#binaryrenderer).
 
-**`streamFrom(InputStream inputStream)`**  
+**`writeResponseUsing(Texter texter)`**  
 ⇒ *`HttpRenderer`*  
-Renderer streaming data from `inputStream` to the response output stream.
-
-**`writeUsing(Texter texter)`**  
-⇒ *`HttpRenderer`*  
-Renderer using `texter` to write to the response writer.
-
-**`writeFrom(Reader reader)`**  
-⇒ *`HttpRenderer`*  
-Renderer writing text from `reader` to the response writer.
-
-**`writeFrom(T toWrite, Function<? super T, String> stringifier)`**  
-⇒ *`HttpRenderer`*  
-Renderer writing `toWrite` converted into a string using `stringifier` to
- the response writer.
-
-**`writeFrom(Object toWrite)`**  
-⇒ *`HttpRenderer`*  
-Renderer writing `toWrite` converted into a string using `toWrite.toString`
- to the response writer.
+Renderer using `texter` to write to the response writer,
+ see [`TextRenderer`](#textrenderer).
 
 ### HttpRequestFilter
 _[(src)](src/main/java/org/tinyj/web/mvc/HttpRequestFilter.java)_ |
@@ -418,16 +404,16 @@ Write data to `writer`. `writer` should be ready to be written to.
  By contract an implementation is required to not call `writer.close()`
  on invocation.
 
-**`textFrom(T toWrite)`**  
+**`text(T toWrite)`**  
 ⇒ *`Texter`*  
 Creates a `Texter` that writes `toWrite.toString()` on invocation.
 
-**`textFrom(T toWrite, Function<? super T, String> stringifier)`**  
+**`text(T toWrite, Function<? super T, String> stringifier)`**  
 ⇒ *`Texter`*  
 Creates a `Texter` that, when invoked, writes `toWrite` converted to
  string using `stringifier`.
 
-**`textFrom(Reader reader)`**  
+**`text(Reader reader)`**  
 ⇒ *`Texter`*  
 Creates a `Texter` that writes all text from `reader` on invocation.
 

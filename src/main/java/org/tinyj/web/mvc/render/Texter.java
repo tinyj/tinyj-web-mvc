@@ -34,24 +34,24 @@ public interface Texter {
   void writeTo(Writer writer) throws Exception;
 
   /** Creates a `Texter` that writes `toWrite.toString()` on invocation. */
-  static <T> Texter textFrom(T toWrite) {
-    return textFrom(toWrite, Object::toString);
+  static <T> Texter text(T toWrite) {
+    return text(toWrite, Object::toString);
   }
 
   /**
    * Creates a `Texter` that, when invoked, writes `toWrite` converted to
    * string using `stringifier`.
    */
-  static <T> Texter textFrom(T toWrite, Function<? super T, String> stringifier) {
+  static <T> Texter text(T toWrite, Function<? super T, String> stringifier) {
     return writer -> writer.write(stringifier.apply(toWrite));
   }
 
   /** Creates a `Texter` that writes all text from `reader` on invocation. */
-  static Texter textFrom(Reader reader) {
-    return textFrom(reader, 4096);
+  static Texter text(Reader reader) {
+    return text(reader, 4096);
   }
 
-  static Texter textFrom(Reader reader, int bufferSize) {
+  static Texter text(Reader reader, int bufferSize) {
     return writer -> {
       char[] buffer = new char[bufferSize];
       int read;

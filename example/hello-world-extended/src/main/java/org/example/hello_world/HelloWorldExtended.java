@@ -27,13 +27,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import static org.tinyj.web.mvc.DSL.*;
-import static org.tinyj.web.mvc.render.Texter.textFrom;
+import static org.tinyj.web.mvc.render.Texter.text;
 
 public class HelloWorldExtended extends HttpServletAdapter {
 
   public HelloWorldExtended() {
     super(dispatch(
-        resource("/", get(writeUsing(textFrom("Hello world!\n")))),
+        resource("/", get(
+            writeResponseUsing(text("Hello world!\n")))),
 
         resource("/hello",
                  get((req, res) -> {
@@ -42,7 +43,7 @@ public class HelloWorldExtended extends HttpServletAdapter {
                  }),
                  put((req, res) -> {
                    res.getWriter().append("Hello ");
-                   textFrom(req.getReader()).writeTo(res.getWriter());
+                   text(req.getReader()).writeTo(res.getWriter());
                    res.getWriter().append('!').println();
                  })),
 
